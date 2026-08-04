@@ -6,55 +6,75 @@
   <title>CREATOR PORTFOLIO</title>
 <style>
     :root {
-      /* 背景画像のパス（同じフォルダーにある画像ファイル名） */
-      --bg-image: url('bg.png'); 
+      /* ★ 背景画像のファイル名（GitHubに上げた画像名） */
+      --bg-image: url('bg.jpg'); 
 
-      /* その他のカラー設定 */
-      --card-bg: rgba(255, 255, 255, 0.85); /* カード背景：半透明の白にしてイラストを透けさせる */
+      /* カラー設定（必要に応じて） */
       --text-main: #0f172a;
       --text-sub: #475569;
-      --accent: #2563eb;
-      --tag-bg: #f1f5f9;
-      --tag-text: #475569;
-      --border-color: rgba(226, 232, 240, 0.8);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
+    /* ★ ここを差し替えます！ ★ */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
       
-      /* ★ 背景イラストの設定 ★ */
       background-image: var(--bg-image);
-      background-size: cover;          /* 画面全体に画像をフィットさせる */
-      background-position: center;     /* 画像の中央を基準にする */
-      background-repeat: no-repeat;    /* 画像を繰り返さない */
-      background-attachment: fixed;    /* スクロールしても背景画像を固定する */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       
       color: var(--text-main);
-      padding: 60px 20px;
-      min-height: 100vh;
+      
+      /* ウインドウ化（小窓化）のためのレイアウト設定 */
+      height: 100vh;
+      overflow: hidden; /* 画面全体のスクロールを消し、中央の小窓だけ動かす */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 以下、既存のスタイルコード... */
-
-  /* コンテナの最大幅を少し狭くして、画面左右の余白（イラスト）を広く見せる */
-.container { 
-      max-width: 720px; /* ここを小さくすることで、左右の余白（イラスト）が大きく広がります */
-      margin: 0 auto; 
-    }
-    header { text-align: center; margin-bottom: 40px; }
-    header h1 { font-size: 2rem; letter-spacing: 2px; margin-bottom: 8px; }
-    header p { color: var(--text-sub); font-size: 0.95rem; }
-
-    /* フィルターボタン */
-    .filter-container {
+    /* ★ ここにさっきの .container の設定を追加 ★ */
+    .container {
+      max-width: 760px;
+      height: 80vh;
+      margin: 0 auto;
+      padding: 24px;
+      
+      background-color: rgba(255, 255, 255, 0.75); /* 白の半透明 */
+      backdrop-filter: blur(12px);                 /* すりガラス効果 */
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      
+      overflow-y: auto; /* 小窓の中だけスクロール */
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 30px;
+      flex-direction: column;
+    }
+
+
+.container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .container::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.15);
+      border-radius: 3px;
+    }
+  
+/* フィルターボタン（ウィンドウの上部に綺麗に収める） */
+    .filter-container {
+      position: sticky;
+      top: 0;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 10px 0;
+      margin-bottom: 20px;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+      border-radius: 8px;
     }
     .filter-btn {
       background-color: var(--card-bg);
@@ -72,32 +92,30 @@
       border-color: var(--accent);
       font-weight: bold;
     }
-
-    /* 作品グリッド */
-.grid {
+/* 作品グリッド（3列でコンパクトに配置） */
+    .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 20px; /* カード同士の間隔も程よく詰める */
+      gap: 16px;
     }
-    @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 .card {
-      background-color: rgba(255, 255, 255, 0.85); /* 半透明にして背景をうっすら透けさせる */
-      backdrop-filter: blur(8px);                 /* すりガラス効果 */
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background-color: #ffffff;                    /* 白背景にして見やすく */
+      border-radius: 8px;                           /* 控えめな角丸 */
+      border: 1px solid rgba(226, 232, 240, 0.8);  /* うっすらとした境界線 */
       overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);    /* ほんのり影をつける */
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
     }
+    
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
+      transform: translateY(-3px);                  /* マウスを乗せた時に少し上に浮く */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
-
     .thumbnail-wrapper {
       position: relative;
       width: 100%;
