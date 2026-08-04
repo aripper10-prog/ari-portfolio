@@ -87,7 +87,7 @@
       text-transform: uppercase;
     }
 
-    /* フィルターボタン & 並べ替え */
+    /* フィルターボタン & 並べ替え & Shop */
     .filter-container {
       display: flex;
       flex-wrap: wrap;
@@ -132,6 +132,27 @@
     .sort-select:hover {
       border-color: #94a3b8;
       color: var(--text-main);
+    }
+
+    /* ★ Shopボタン（物販リンク）のスタイル ★ */
+    .shop-btn {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #ffffff;
+      text-decoration: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+      transition: all 0.2s ease;
+    }
+    .shop-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+      opacity: 0.95;
     }
 
     /* 作品グリッド（動画カードの配列） */
@@ -275,6 +296,10 @@
         padding: 4px 8px;
         font-size: 0.72rem;
       }
+      .shop-btn {
+        padding: 4px 10px;
+        font-size: 0.72rem;
+      }
     }
 
     /* モーダル */
@@ -342,6 +367,9 @@
           <option value="newest">新しい順</option>
           <option value="oldest">古い順</option>
         </select>
+
+        <!-- ★ 物販リンク（Shopボタン） ※hrefを実際のショップURLに変更してください ★ -->
+        <a href="https://arirevive.booth.pm/" target="_blank" rel="noopener noreferrer" class="shop-btn">Shop ↗</a>
       </div>
     </div>
 
@@ -382,7 +410,7 @@
     const filterBtns = document.querySelectorAll('.filter-btn');
     const sortSelect = document.getElementById('sort-select');
 
-    // ★ 修正: ページネーション（51個目以降もループして全件取得する処理） ★
+    // ページネーション（51個目以降もループして全件取得する処理）
     async function fetchPlaylist(tagName, playlistId) {
       if (!playlistId) return;
 
@@ -432,7 +460,6 @@
       const videoIds = Array.from(allWorksMap.keys());
       if (videoIds.length === 0) return;
 
-      // YouTube APIは一度に最大50件まで指定可能（カンマ区切りで複数チャンク処理）
       const chunks = [];
       for (let i = 0; i < videoIds.length; i += 50) {
         chunks.push(videoIds.slice(i, i + 50));
@@ -468,7 +495,6 @@
       }
 
       await Promise.all(promises);
-      // 動画自体の投稿日時を正確に取得
       await fetchVideoDetails();
       renderWorks();
     }
