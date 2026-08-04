@@ -38,13 +38,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
-  /* ★ 中央の小窓ウィンドウ ★ */
+/* ★ 中央の小窓ウィンドウ ★ */
     .container { 
-      width: 90%;                      /* 基本は画面幅の90% */
-      max-width: 760px;               /* PCでの最大幅 */
-      height: 85vh;                   /* ウィンドウの高さ */
+      width: 90%;                      
+      max-width: 760px;               
+      height: 85vh;                   
       margin: 0 auto; 
-      padding: 24px;
+      padding: 0 24px 24px 24px;       /* 上のpaddingは固定ヘッダーで調整 */
       
       background-color: rgba(255, 255, 255, 0.75); 
       backdrop-filter: blur(12px);                 
@@ -57,113 +57,81 @@
       flex-direction: column;
     }
 
-/* ★ ヘッダーをウィンドウ最上部に固定 ★ */
-    header { 
+    /* ★ ヘッダー＋ボタン全体を最上部に完全固定 ★ */
+    .sticky-header {
       position: sticky;
-      top: -24px;                     /* padding分を相殺して一番上に貼り付ける */
-      background: rgba(255, 255, 255, 0.95); /* スクロールした動画が透けないよう少し濃い白 */
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
-      margin: -24px -24px 20px -24px;  /* ウィンドウの端まで背景色を広げる */
-      padding: 20px 16px 12px 16px;
+      margin: 0 -24px 20px -24px;       /* ウィンドウの左右端まで背景色を伸ばす */
+      padding: 20px 24px 12px 24px;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 16px 16px 0 0;     /* ウィンドウの上部角丸に合わせる */
+    }
+
+    header { 
       text-align: center; 
-      z-index: 20;                     /* 動画カードより手前に表示 */
-      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      margin-bottom: 12px;
     }
     header h1 { 
-      font-size: 1.6rem;               /* タイトルを少しすっきりしたサイズに */
+      font-size: 1.5rem;               
       font-weight: 700;
-      letter-spacing: 3px; 
+      letter-spacing: 2.5px; 
       margin-bottom: 4px; 
       color: var(--text-main);
     }
     header p { 
       color: var(--text-sub); 
-      font-size: 0.8rem; 
+      font-size: 0.78rem; 
       letter-spacing: 1px;
       text-transform: uppercase;
     }
 
-    /* ★ フィルターボタンもヘッダー直下に固定 ★ */
+    /* フィルターボタン */
     .filter-container {
-      position: sticky;
-      top: 55px;                       /* ヘッダーの下にピタッと固定 */
-      background: rgba(255, 255, 255, 0.95);
-      padding: 10px 0;
-      margin-bottom: 20px;
-      z-index: 10;
-      border-radius: 0 0 8px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
     }
 
-    /* ★ スマホ表示時（画面幅が600px以下）の特別調整 ★ */
+    /* ★ スマホ表示時（画面幅600px以下）の特別な処理 ★ */
     @media (max-width: 600px) {
       .container {
-        width: 82%;                    /* ウィンドウ幅を82%までキュッと絞り、左右にイラストを見せる */
-        padding: 16px;                 /* 余白を詰めてコンパクトに */
+        width: 88%;
+        padding: 0 16px 16px 16px;
         height: 88vh;
       }
-      header {
-        top: -16px;
-        margin: -16px -16px 16px -16px;
-        padding: 16px 12px 8px 12px;
+      
+      .sticky-header {
+        margin: 0 -16px 16px -16px;
+        padding: 16px 12px 10px 12px;
+        
+        /* スマホ時のみ、ヘッダー背景にイラストを表示！ */
+        background-image: var(--bg-image);
+        background-size: cover;
+        background-position: center;
+        color: #ffffff; /* イラストの上で見やすいように白文字に */
       }
-      header h1 {
-        font-size: 1.2rem;             /* スマホに合わせて文字を少し小さく */
-        letter-spacing: 1.5px;
-      }
-      .filter-container {
-        top: 42px;
-        gap: 6px;                      /* ボタンの隙間を詰める */
-      }
-      .filter-btn {
-        padding: 6px 12px;             /* ボタン自体も少しコンパクトに */
-        font-size: 0.75rem;
-      }
-    }
 
-  
-.container::-webkit-scrollbar {
-      width: 6px;
+      /* スマホ時の文字色と影の調整（イラストの上でも読めるように） */
+      header h1 {
+        font-size: 1.2rem;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* 薄い黒影をつけて視認性を確保 */
+      }
+      header p {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      }
+
+      .filter-btn {
+        padding: 5px 10px;
+        font-size: 0.72rem;
+        background-color: rgba(255, 255, 255, 0.9); /* ボタンを読みやすく */
+      }
     }
-    .container::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.15);
-      border-radius: 3px;
-    }
-  
-/* フィルターボタン（ウィンドウの上部に綺麗に収める） */
-    .filter-container {
-      position: sticky;
-      top: 0;
-      background: rgba(255, 255, 255, 0.9);
-      padding: 10px 0;
-      margin-bottom: 20px;
-      z-index: 10;
-      backdrop-filter: blur(4px);
-      border-radius: 8px;
-    }
-    .filter-btn {
-      background-color: var(--card-bg);
-      color: var(--text-sub);
-      border: 1px solid var(--tag-bg);
-      padding: 8px 18px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-    .filter-btn:hover, .filter-btn.active {
-      background-color: var(--accent);
-      color: #000;
-      border-color: var(--accent);
-      font-weight: bold;
-    }
-/* 作品グリッド（3列でコンパクトに配置） */
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 .card {
       background-color: #ffffff;                    /* 白背景にして見やすく */
       border-radius: 8px;                           /* 控えめな角丸 */
@@ -281,12 +249,14 @@
 <body>
 
   <div class="container">
-<header>
-    <h1>ari's CREATOR PORTFOLIO</h1>
-    <p>Music & Video Works</p>
-  </header>
+<!-- ★ ヘッダーとフィルターボタンを1つのブロックにまとめます ★ -->
+    <div class="sticky-header">
+      <header>
+        <h1>ARI'S CREATOR PORTFOLIO</h1>
+        <p>Music & Video Works</p>
+      </header>
 
-    <div class="filter-container">
+      <div class="filter-container" id="filter-container">
       <button class="filter-btn active" data-filter="all">すべて</button>
       <button class="filter-btn" data-filter="作詞">作詞</button>
       <button class="filter-btn" data-filter="作曲">作曲</button>
@@ -304,6 +274,8 @@
     <div class="modal-content">
       <span class="close-btn" id="modal-close">&times;</span>
       <div class="video-container" id="video-container"></div>
+<div class="grid" id="portfolio-grid">
+      <div class="loading">動画を読み込み中...</div>
     </div>
   </div>
 
