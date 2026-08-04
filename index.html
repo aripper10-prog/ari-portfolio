@@ -233,20 +233,27 @@
       
       .sticky-header {
         margin: 0 -16px 16px -16px;
-        padding: 20px 12px 12px 12px;
+        padding: 16px 12px 10px 12px;
         border-radius: 0;
         
-        /* スマホ時のみヘッダー画像 ＋ 文字視認性向上のための黒暗めオーバーレイフィルター */
+        /* スマホ時：縦横比を崩さず綺麗にヘッダー枠へ収める調整 */
         background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), var(--header-image);
         background-size: cover;
         background-position: center;
+        aspect-ratio: 4 / 1.2; /* アスペクト比を維持して変形を防ぐ */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
+      header {
+        margin-bottom: 8px;
+      }
       header h1 {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         color: #ffffff; /* 白文字に固定 */
         font-weight: 800;
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5); /* 強力な文字影で浮き立たせる */
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5); /* 強力な文字影 */
       }
       header p {
         color: #f8fafc;
@@ -360,9 +367,9 @@
     const PLAYLIST_IDS = {
       "作詞": "PLBgx-X3Yb8yZYlQ5P4crH4KCtkkMONvfz",
       "作曲": "PLBgx-X3Yb8yYFEgoWQD3RwJ3x0nAX13x8",
-      "MIX":  "",
+      "MIX":  "PLYIzDOQQK1Tk",
       "歌唱": "PLBgx-X3Yb8ybvcJRmKdcDVnu0lrRYKD_D",
-      "動画": ""
+      "動画": "PLSkUQA5PfT3s"
     };
 
     let allWorksMap = new Map();
