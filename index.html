@@ -39,7 +39,11 @@
 
     /* 以下、既存のスタイルコード... */
 
-    .container { max-width: 1200px; margin: 0 auto; }
+  /* コンテナの最大幅を少し狭くして、画面左右の余白（イラスト）を広く見せる */
+    .container { 
+      max-width: 900px; /* 元の1100pxから縮小して余白を確保 */
+      margin: 0 auto; 
+    }
     header { text-align: center; margin-bottom: 40px; }
     header h1 { font-size: 2rem; letter-spacing: 2px; margin-bottom: 8px; }
     header p { color: var(--text-sub); font-size: 0.95rem; }
@@ -70,21 +74,22 @@
     }
 
     /* 作品グリッド */
-    .grid {
+.grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 24px;
+      gap: 20px; /* カード同士の間隔も程よく詰める */
     }
-    @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+ @media (min-width: 640px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
-
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
+.card {
+      background-color: rgba(255, 255, 255, 0.85); /* 半透明にして背景をうっすら透けさせる */
+      backdrop-filter: blur(8px);                 /* すりガラス効果 */
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
     }
@@ -128,8 +133,27 @@
     .card:hover .play-icon { background: var(--accent); }
     .card:hover .play-icon::after { border-color: transparent transparent transparent #000; }
 
-    .card-info { padding: 16px; flex-grow: 1; display: flex; flex-direction: column; }
-    .card-title { font-size: 1.05rem; font-weight: bold; margin-bottom: 10px; line-height: 1.4; }
+.card-info { padding: 12px; flex-grow: 1; display: flex; flex-direction: column; }
+    .card-title { 
+      font-size: 0.8rem; /* 少し小さめの文字でスタイリッシュに */
+      margin-bottom: 6px; 
+      line-height: 1.3; 
+    }
+    .tag {
+      font-size: 0.65rem;
+      padding: 2px 6px;
+    }
+  .card-title { 
+      font-size: 0.85rem; /* 文字を少し小さく */
+      font-weight: 600; 
+      color: var(--text-main);
+      margin-bottom: 8px; 
+      line-height: 1.4; 
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
     .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
     .tag {
       font-size: 0.75rem;
