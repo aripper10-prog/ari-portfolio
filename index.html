@@ -3,32 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CREATOR PORTFOLIO</title>
-<style>
+  <title>ari's CREATOR PORTFOLIO</title>
+  <style>
     :root {
       /* ★ 背景画像のファイル名（GitHubに上げた画像名） */
       --bg-image: url('bg.png'); 
 
-      /* カラー設定（必要に応じて） */
+      /* カラー設定 */
       --text-main: #0f172a;
       --text-sub: #475569;
+      --accent: #2563eb;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ★ ここを差し替えます！ ★ */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
-      
       background-image: var(--bg-image);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
-      
       color: var(--text-main);
       
-      /* ウインドウ化（小窓化）のためのレイアウト設定 */
       height: 100vh;
       overflow: hidden; /* 画面全体のスクロールを消し、中央の小窓だけ動かす */
       display: flex;
@@ -38,13 +35,13 @@
       -webkit-font-smoothing: antialiased;
     }
 
-/* ★ 中央の小窓ウィンドウ ★ */
+    /* ★ 中央の小窓ウィンドウ ★ */
     .container { 
       width: 90%;                      
       max-width: 760px;               
       height: 85vh;                   
       margin: 0 auto; 
-      padding: 0 24px 24px 24px;       /* 上のpaddingは固定ヘッダーで調整 */
+      padding: 0 24px 24px 24px;
       
       background-color: rgba(255, 255, 255, 0.75); 
       backdrop-filter: blur(12px);                 
@@ -95,57 +92,50 @@
       justify-content: center;
       gap: 8px;
     }
-
-    /* ★ スマホ表示時（画面幅600px以下）の特別な処理 ★ */
-    @media (max-width: 600px) {
-      .container {
-        width: 88%;
-        padding: 0 16px 16px 16px;
-        height: 88vh;
-      }
-      
-      .sticky-header {
-        margin: 0 -16px 16px -16px;
-        padding: 16px 12px 10px 12px;
-        
-        /* スマホ時のみ、ヘッダー背景にイラストを表示！ */
-        background-image: var(--bg-image);
-        background-size: cover;
-        background-position: center;
-        color: #ffffff; /* イラストの上で見やすいように白文字に */
-      }
-
-      /* スマホ時の文字色と影の調整（イラストの上でも読めるように） */
-      header h1 {
-        font-size: 1.2rem;
-        color: #ffffff;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.6); /* 薄い黒影をつけて視認性を確保 */
-      }
-      header p {
-        color: rgba(255, 255, 255, 0.9);
-        text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-      }
-
-      .filter-btn {
-        padding: 5px 10px;
-        font-size: 0.72rem;
-        background-color: rgba(255, 255, 255, 0.9); /* ボタンを読みやすく */
-      }
+    .filter-btn {
+      background-color: #ffffff;
+      color: var(--text-sub);
+      border: 1px solid #cbd5e1;
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
-.card {
-      background-color: #ffffff;                    /* 白背景にして見やすく */
-      border-radius: 8px;                           /* 控えめな角丸 */
-      border: 1px solid rgba(226, 232, 240, 0.8);  /* うっすらとした境界線 */
+    .filter-btn:hover {
+      color: var(--text-main);
+      border-color: #94a3b8;
+    }
+    .filter-btn.active {
+      background-color: var(--text-main);
+      color: #ffffff;
+      border-color: var(--text-main);
+    }
+
+    /* 作品グリッド（動画カードの配列） */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* 動画カード */
+    .card {
+      background-color: #ffffff;
+      border-radius: 8px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
       overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);    /* ほんのり影をつける */
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
     }
-    
     .card:hover {
-      transform: translateY(-3px);                  /* マウスを乗せた時に少し上に浮く */
+      transform: translateY(-3px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     }
     .thumbnail-wrapper {
@@ -164,44 +154,79 @@
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      width: 50px; height: 50px;
+      width: 44px; height: 44px;
       background: rgba(0,0,0,0.7);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.2s;
     }
     .play-icon::after {
       content: '';
       display: block;
       width: 0; height: 0;
       border-style: solid;
-      border-width: 8px 0 8px 14px;
+      border-width: 7px 0 7px 12px;
       border-color: transparent transparent transparent #fff;
-      margin-left: 3px;
+      margin-left: 2px;
     }
     .card:hover .play-icon { background: var(--accent); }
-    .card:hover .play-icon::after { border-color: transparent transparent transparent #000; }
 
-.card-info { padding: 10px; }
+    .card-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-title { 
-      font-size: 0.8rem; /* 少し小さめの文字でスタイリッシュに */
+      font-size: 0.8rem;
+      font-weight: 600;
       margin-bottom: 6px; 
       line-height: 1.3; 
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
     .tag {
       font-size: 0.65rem;
+      background-color: #f1f5f9;
+      color: #475569;
       padding: 2px 6px;
+      border-radius: 4px;
     }
-.card-title { 
-      font-size: 0.8rem; /* 少し小さめの文字でスタイリッシュに */
-      margin-bottom: 6px; 
-      line-height: 1.3; 
-    }
-    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
-.tag {
-      font-size: 0.65rem;
-      padding: 2px 6px;
+
+    /* ★ スマホ表示時（画面幅600px以下）の特別な処理 ★ */
+    @media (max-width: 600px) {
+      .container {
+        width: 88%;
+        padding: 0 16px 16px 16px;
+        height: 88vh;
+      }
+      
+      .sticky-header {
+        margin: 0 -16px 16px -16px;
+        padding: 16px 12px 10px 12px;
+        
+        /* スマホ時のみ、ヘッダー背景にイラストを表示 */
+        background-image: var(--bg-image);
+        background-size: cover;
+        background-position: center;
+        color: #ffffff;
+      }
+
+      header h1 {
+        font-size: 1.2rem;
+        color: #ffffff;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      }
+      header p {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+      }
+
+      .filter-btn {
+        padding: 5px 10px;
+        font-size: 0.72rem;
+        background-color: rgba(255, 255, 255, 0.9);
+      }
     }
 
     /* モーダル */
@@ -249,41 +274,42 @@
 <body>
 
   <div class="container">
-<!-- ★ ヘッダーとフィルターボタンを1つのブロックにまとめます ★ -->
+    <!-- ★ ヘッダーとフィルターボタンの固定ブロック ★ -->
     <div class="sticky-header">
       <header>
-        <h1>ARI'S CREATOR PORTFOLIO</h1>
+        <h1>ari's CREATOR PORTFOLIO</h1>
         <p>Music & Video Works</p>
       </header>
 
       <div class="filter-container" id="filter-container">
-      <button class="filter-btn active" data-filter="all">すべて</button>
-      <button class="filter-btn" data-filter="作詞">作詞</button>
-      <button class="filter-btn" data-filter="作曲">作曲</button>
-      <button class="filter-btn" data-filter="MIX">MIX</button>
-      <button class="filter-btn" data-filter="歌唱">歌唱</button>
-      <button class="filter-btn" data-filter="動画">動画</button>
+        <button class="filter-btn active" data-filter="all">すべて</button>
+        <button class="filter-btn" data-filter="作詞">作詞</button>
+        <button class="filter-btn" data-filter="作曲">作曲</button>
+        <button class="filter-btn" data-filter="MIX">MIX</button>
+        <button class="filter-btn" data-filter="歌唱">歌唱</button>
+        <button class="filter-btn" data-filter="動画">動画</button>
+      </div>
     </div>
 
+    <!-- 動画一覧のグリッド -->
     <div class="grid" id="portfolio-grid">
       <div class="loading">動画を読み込み中...</div>
     </div>
   </div>
 
+  <!-- 動画再生モーダル -->
   <div class="modal" id="video-modal">
     <div class="modal-content">
       <span class="close-btn" id="modal-close">&times;</span>
       <div class="video-container" id="video-container"></div>
-<div class="grid" id="portfolio-grid">
-      <div class="loading">動画を読み込み中...</div>
     </div>
   </div>
 
   <script>
-// ★ 1. APIキー（""で囲む）
-    const API_KEY = "AIzaSyBflox0J4t8K9ChnspNSDJi5htIIYnydoQ";
+    // ★ 1. ここにご自身のYouTube APIキーを入力してください ★
+    const API_KEY = "ここにご自身のAPIキーを入れる";
 
-    // ★ 2. プレイリストID（それぞれ""で囲み、末尾にカンマ「,」をつける）
+    // ★ 2. プレイリストID
     const PLAYLIST_IDS = {
       "作詞": "PLBgx-X3Yb8yZYlQ5P4crH4KCtkkMONvfz",
       "作曲": "PLBgx-X3Yb8yYFEgoWQD3RwJ3x0nAX13x8",
@@ -292,7 +318,7 @@
       "動画": ""
     };
 
-    let allWorksMap = new Map(); // 動画IDをキーにして重複を防止
+    let allWorksMap = new Map();
 
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
@@ -300,7 +326,6 @@
     const closeBtn = document.getElementById('modal-close');
     const filterBtns = document.querySelectorAll('.filter-btn');
 
-    // 指定されたプレイリストから動画を取得する関数
     async function fetchPlaylist(tagName, playlistId) {
       if (!playlistId) return;
 
@@ -318,14 +343,12 @@
               ? item.snippet.thumbnails.high.url 
               : item.snippet.thumbnails.default.url;
 
-            // すでに別のプレイリスト経由で登録済みの場合はタグ（役割）を追加
             if (allWorksMap.has(videoId)) {
               const existingWork = allWorksMap.get(videoId);
               if (!existingWork.tags.includes(tagName)) {
                 existingWork.tags.push(tagName);
               }
             } else {
-              // 新規追加
               allWorksMap.set(videoId, {
                 id: videoId,
                 title: title,
@@ -340,11 +363,10 @@
       }
     }
 
-    // すべてのプレイリストを一括読み込み
     async function fetchAllPlaylists() {
       const promises = [];
       for (const [tagName, playlistId] of Object.entries(PLAYLIST_IDS)) {
-        if (playlistId && playlistId !== "PLxxxxxxxxxxxx1") {
+        if (playlistId) {
           promises.push(fetchPlaylist(tagName, playlistId));
         }
       }
@@ -407,7 +429,6 @@
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // 読み込み実行
     fetchAllPlaylists();
   </script>
 </body>
