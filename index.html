@@ -53,7 +53,7 @@
       font-weight: bold;
     }
 
-    /* 作品グリッド（スマホ1列 / タブレット2列 / PC3列） */
+    /* 作品グリッド */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -80,7 +80,7 @@
     .thumbnail-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 56.25%; /* 16:9 Aspect Ratio */
+      padding-top: 56.25%;
       background-color: #000;
     }
     .thumbnail-wrapper img {
@@ -123,7 +123,7 @@
       border-radius: 4px;
     }
 
-    /* モーダルポップアップ */
+    /* モーダル */
     .modal {
       display: none;
       position: fixed;
@@ -162,6 +162,7 @@
       font-size: 28px;
       cursor: pointer;
     }
+    .loading { text-align: center; color: var(--text-sub); font-size: 1.1rem; padding: 40px; grid-column: 1 / -1; }
   </style>
 </head>
 <body>
@@ -172,7 +173,6 @@
       <p>Music & Video Works</p>
     </header>
 
-    <!-- タグフィルター -->
     <div class="filter-container">
       <button class="filter-btn active" data-filter="all">すべて</button>
       <button class="filter-btn" data-filter="作詞">作詞</button>
@@ -182,11 +182,11 @@
       <button class="filter-btn" data-filter="動画">動画</button>
     </div>
 
-    <!-- 動画一覧を表示する領域 -->
-    <div class="grid" id="portfolio-grid"></div>
+    <div class="grid" id="portfolio-grid">
+      <div class="loading">動画を読み込み中...</div>
+    </div>
   </div>
 
-  <!-- モーダルウィンドウ -->
   <div class="modal" id="video-modal">
     <div class="modal-content">
       <span class="close-btn" id="modal-close">&times;</span>
@@ -195,26 +195,19 @@
   </div>
 
   <script>
-    // ★ ここに自身の動画データを追加・編集していきます！ ★
-    // id: YouTube動画の「v=xxxxxxx」のID部分
-    // tags: 担当した役割を配列で記述（パターンB：複数タグ対応）
-    const works = [
-      {
-        id: "dQw4w9WgXcQ", // YouTubeのID
-        title: "サンプル楽曲1 - フル制作作品",
-        tags: ["作詞", "作曲", "MIX", "動画"]
-      },
-      {
-        id: "dQw4w9WgXcQ",
-        title: "サンプル楽曲2 - ボーカル＆作詞提供",
-        tags: ["歌唱", "作詞"]
-      },
-      {
-        id: "dQw4w9WgXcQ",
-        title: "サンプル楽曲3 - MIX・エンジニアリングのみ",
-        tags: ["MIX"]
-      }
-    ];
+    const API_KEY = "ここに取得したAPIキーを入力";
+
+    // ★ 役割ごとにプレイリストID（PLxxxx...）を設定してください ★
+    // ※まだ作っていないカテゴリは "" のままでOKです
+    const PLAYLIST_IDS = {
+      "作詞": "PLxxxxxxxxxxxx1",
+      "作曲": "PLxxxxxxxxxxxx2",
+      "MIX":  "PLxxxxxxxxxxxx3",
+      "歌唱": "PLxxxxxxxxxxxx4",
+      "動画": "PLxxxxxxxxxxxx5"
+    };
+
+    let allWorksMap = new Map(); // 動画IDをキーにして重複を防止
 
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
@@ -222,19 +215,78 @@
     const closeBtn = document.getElementById('modal-close');
     const filterBtns = document.querySelectorAll('.filter-btn');
 
-    // 動画カードの表示処理
+    // 指定されたプレイリストから動画を取得する関数
+    async function fetchPlaylist(tagName, playlistId) {
+      if (!playlistId) return;
+
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${playlistId}&key=${API_KEY}`;
+      
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.items) {
+          data.items.forEach(item => {
+            const videoId = item.snippet.resourceId.videoId;
+            const title = item.snippet.title;
+            const thumbnail = item.snippet.thumbnails.high 
+              ? item.snippet.thumbnails.high.url 
+              : item.snippet.thumbnails.default.url;
+
+            // すでに別のプレイリスト経由で登録済みの場合はタグ（役割）を追加
+            if (allWorksMap.has(videoId)) {
+              const existingWork = allWorksMap.get(videoId);
+              if (!existingWork.tags.includes(tagName)) {
+                existingWork.tags.push(tagName);
+              }
+            } else {
+              // 新規追加
+              allWorksMap.set(videoId, {
+                id: videoId,
+                title: title,
+                thumbnail: thumbnail,
+                tags: [tagName]
+              });
+            }
+          });
+        }
+      } catch (error) {
+        console.error(`Error fetching ${tagName} playlist:`, error);
+      }
+    }
+
+    // すべてのプレイリストを一括読み込み
+    async function fetchAllPlaylists() {
+      const promises = [];
+      for (const [tagName, playlistId] of Object.entries(PLAYLIST_IDS)) {
+        if (playlistId && playlistId !== "PLxxxxxxxxxxxx1") {
+          promises.push(fetchPlaylist(tagName, playlistId));
+        }
+      }
+
+      await Promise.all(promises);
+      renderWorks();
+    }
+
     function renderWorks(filter = 'all') {
       grid.innerHTML = '';
+      const worksArray = Array.from(allWorksMap.values());
+      
       const filteredWorks = filter === 'all' 
-        ? works 
-        : works.filter(w => w.tags.includes(filter));
+        ? worksArray 
+        : worksArray.filter(w => w.tags.includes(filter));
+
+      if (filteredWorks.length === 0) {
+        grid.innerHTML = '<div class="loading">該当する作品がありません。</div>';
+        return;
+      }
 
       filteredWorks.forEach(work => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerHTML = `
           <div class="thumbnail-wrapper">
-            <img src="https://img.youtube.com/vi/${work.id}/hqdefault.jpg" alt="${work.title}" loading="lazy">
+            <img src="${work.thumbnail}" alt="${work.title}" loading="lazy">
             <div class="play-icon"></div>
           </div>
           <div class="card-info">
@@ -249,19 +301,16 @@
       });
     }
 
-    // モーダル処理（開く時に初めてiframeを挿入＝超軽量）
     function openModal(id) {
       videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
       modal.classList.add('active');
     }
 
-    // モーダル閉じる（iframeを消去して動画音声を止める）
     function closeModal() {
       modal.classList.remove('active');
       videoContainer.innerHTML = '';
     }
 
-    // フィルターボタンイベント
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         filterBtns.forEach(b => b.classList.remove('active'));
@@ -273,8 +322,8 @@
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // 初期描画
-    renderWorks();
+    // 読み込み実行
+    fetchAllPlaylists();
   </script>
 </body>
 </html>
