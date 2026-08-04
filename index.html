@@ -375,6 +375,7 @@
     const filterBtns = document.querySelectorAll('.filter-btn');
     const sortSelect = document.getElementById('sort-select');
 
+    // プレイリストから動画一覧を取得
     async function fetchPlaylist(tagName, playlistId) {
       if (!playlistId) return;
 
@@ -388,7 +389,6 @@
           data.items.forEach(item => {
             const videoId = item.snippet.resourceId.videoId;
             const title = item.snippet.title;
-            const publishedAt = new Date(item.snippet.publishedAt).getTime(); // 投稿日時（ミリ秒）を取得
             const thumbnail = item.snippet.thumbnails.high 
               ? item.snippet.thumbnails.high.url 
               : item.snippet.thumbnails.default.url;
@@ -403,7 +403,7 @@
                 id: videoId,
                 title: title,
                 thumbnail: thumbnail,
-                publishedAt: publishedAt,
+                publishedAt: 0, // videos APIで後から正確な投稿日時を代入
                 tags: [tagName]
               });
             }
@@ -411,6 +411,38 @@
         }
       } catch (error) {
         console.error(`Error fetching ${tagName} playlist:`, error);
+      }
+    }
+
+    // 動画本体の公開日時（動画投稿日）を取得してデータを更新する関数
+    async function fetchVideoDetails() {
+      const videoIds = Array.from(allWorksMap.keys());
+      if (videoIds.length === 0) return;
+
+      // YouTube APIは一度に最大50件まで指定可能（カンマ区切り）
+      const chunks = [];
+      for (let i = 0; i < videoIds.length; i += 50) {
+        chunks.push(videoIds.slice(i, i + 50));
+      }
+
+      for (const chunk of chunks) {
+        const idsStr = chunk.join(',');
+        const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${idsStr}&key=${API_KEY}`;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          if (data.items) {
+            data.items.forEach(item => {
+              const videoId = item.id;
+              const actualPublishedAt = new Date(item.snippet.publishedAt).getTime();
+              if (allWorksMap.has(videoId)) {
+                allWorksMap.get(videoId).publishedAt = actualPublishedAt;
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching video details:', error);
+        }
       }
     }
 
@@ -423,6 +455,8 @@
       }
 
       await Promise.all(promises);
+      // 動画自体の投稿日時を正確に取得
+      await fetchVideoDetails();
       renderWorks();
     }
 
@@ -435,7 +469,7 @@
         ? worksArray 
         : worksArray.filter(w => w.tags.includes(currentFilter));
 
-      // 2. ソート処理（新しい順 / 古い順）
+      // 2. ソート処理（動画自体の投稿日時で比較）
       const sortOrder = sortSelect.value;
       filteredWorks.sort((a, b) => {
         return sortOrder === 'newest' 
