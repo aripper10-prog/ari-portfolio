@@ -87,11 +87,12 @@
       text-transform: uppercase;
     }
 
-    /* フィルターボタン */
+    /* フィルターボタン & 並べ替え */
     .filter-container {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
       gap: 8px;
     }
     .filter-btn {
@@ -113,6 +114,24 @@
       background-color: var(--text-main);
       color: #ffffff;
       border-color: var(--text-main);
+    }
+
+    /* 並べ替えセレクトボックス */
+    .sort-select {
+      background-color: #ffffff;
+      color: var(--text-sub);
+      border: 1px solid #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .sort-select:hover {
+      border-color: #94a3b8;
+      color: var(--text-main);
     }
 
     /* 作品グリッド（動画カードの配列） */
@@ -245,6 +264,10 @@
         background-color: #0f172a;
         color: #ffffff;
       }
+      .sort-select {
+        padding: 4px 8px;
+        font-size: 0.72rem;
+      }
     }
 
     /* モーダル */
@@ -306,6 +329,12 @@
         <button class="filter-btn" data-filter="MIX">MIX</button>
         <button class="filter-btn" data-filter="歌唱">歌唱</button>
         <button class="filter-btn" data-filter="動画">動画</button>
+
+        <!-- ★ 並べ替えセレクトボックス ★ -->
+        <select id="sort-select" class="sort-select">
+          <option value="newest">新しい順</option>
+          <option value="oldest">古い順</option>
+        </select>
       </div>
     </div>
 
@@ -330,19 +359,21 @@
     // ★ 2. プレイリストID
     const PLAYLIST_IDS = {
       "作詞": "PLBgx-X3Yb8yZYlQ5P4crH4KCtkkMONvfz",
-      "作曲": "PLdYJ7kqXlx94",
-      "MIX":  "PLYIzDOQQK1Tk",
+      "作曲": "PLBgx-X3Yb8yYFEgoWQD3RwJ3x0nAX13x8",
+      "MIX":  "",
       "歌唱": "PLBgx-X3Yb8ybvcJRmKdcDVnu0lrRYKD_D",
-      "動画": "PLSkUQA5PfT3s"
+      "動画": ""
     };
 
     let allWorksMap = new Map();
+    let currentFilter = 'all';
 
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
     const videoContainer = document.getElementById('video-container');
     const closeBtn = document.getElementById('modal-close');
     const filterBtns = document.querySelectorAll('.filter-btn');
+    const sortSelect = document.getElementById('sort-select');
 
     async function fetchPlaylist(tagName, playlistId) {
       if (!playlistId) return;
@@ -357,6 +388,7 @@
           data.items.forEach(item => {
             const videoId = item.snippet.resourceId.videoId;
             const title = item.snippet.title;
+            const publishedAt = new Date(item.snippet.publishedAt).getTime(); // 投稿日時（ミリ秒）を取得
             const thumbnail = item.snippet.thumbnails.high 
               ? item.snippet.thumbnails.high.url 
               : item.snippet.thumbnails.default.url;
@@ -371,6 +403,7 @@
                 id: videoId,
                 title: title,
                 thumbnail: thumbnail,
+                publishedAt: publishedAt,
                 tags: [tagName]
               });
             }
@@ -393,13 +426,22 @@
       renderWorks();
     }
 
-    function renderWorks(filter = 'all') {
+    function renderWorks() {
       grid.innerHTML = '';
-      const worksArray = Array.from(allWorksMap.values());
+      let worksArray = Array.from(allWorksMap.values());
       
-      const filteredWorks = filter === 'all' 
+      // 1. フィルター処理
+      let filteredWorks = currentFilter === 'all' 
         ? worksArray 
-        : worksArray.filter(w => w.tags.includes(filter));
+        : worksArray.filter(w => w.tags.includes(currentFilter));
+
+      // 2. ソート処理（新しい順 / 古い順）
+      const sortOrder = sortSelect.value;
+      filteredWorks.sort((a, b) => {
+        return sortOrder === 'newest' 
+          ? b.publishedAt - a.publishedAt 
+          : a.publishedAt - b.publishedAt;
+      });
 
       if (filteredWorks.length === 0) {
         grid.innerHTML = '<div class="loading">該当する作品がありません。</div>';
@@ -436,12 +478,19 @@
       videoContainer.innerHTML = '';
     }
 
+    // フィルターボタン切り替え
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        renderWorks(btn.dataset.filter);
+        currentFilter = btn.dataset.filter;
+        renderWorks();
       });
+    });
+
+    // ソート順切り替えイベント
+    sortSelect.addEventListener('change', () => {
+      renderWorks();
     });
 
     closeBtn.addEventListener('click', closeModal);
