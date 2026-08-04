@@ -4,24 +4,40 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CREATOR PORTFOLIO</title>
-  <style>
+<style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --accent: #38bdf8;
-      --tag-bg: #334155;
+      /* 背景画像のパス（同じフォルダーにある画像ファイル名） */
+      --bg-image: url('bg.png'); 
+
+      /* その他のカラー設定 */
+      --card-bg: rgba(255, 255, 255, 0.85); /* カード背景：半透明の白にしてイラストを透けさせる */
+      --text-main: #0f172a;
+      --text-sub: #475569;
+      --accent: #2563eb;
+      --tag-bg: #f1f5f9;
+      --tag-text: #475569;
+      --border-color: rgba(226, 232, 240, 0.8);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
+      
+      /* ★ 背景イラストの設定 ★ */
+      background-image: var(--bg-image);
+      background-size: cover;          /* 画面全体に画像をフィットさせる */
+      background-position: center;     /* 画像の中央を基準にする */
+      background-repeat: no-repeat;    /* 画像を繰り返さない */
+      background-attachment: fixed;    /* スクロールしても背景画像を固定する */
+      
       color: var(--text-main);
-      padding: 40px 20px;
+      padding: 60px 20px;
       min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
     }
+
+    /* 以下、既存のスタイルコード... */
 
     .container { max-width: 1200px; margin: 0 auto; }
     header { text-align: center; margin-bottom: 40px; }
