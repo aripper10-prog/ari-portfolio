@@ -56,15 +56,12 @@
       flex-direction: column;
     }
 
-    /* ★ ヘッダー＋ボタン全体を最上部に完全固定 ★ */
+    /* ★ ヘッダー＋ボタン全体を最上部に完全固定（PC時は白地） ★ */
     .sticky-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: rgba(255, 255, 255, 0.95);
-      background-image: var(--header-image);
-      background-size: cover;
-      background-position: center;
+      background-color: rgba(255, 255, 255, 0.95); /* PC時は白地 */
       backdrop-filter: blur(8px);
       margin: 0 -24px 20px -24px;       /* ウィンドウの左右端まで背景色を伸ばす */
       padding: 20px 24px 12px 24px;
@@ -217,17 +214,36 @@
       
       .sticky-header {
         margin: 0 -16px 16px -16px;
-        padding: 16px 12px 10px 12px;
+        padding: 20px 12px 12px 12px;
         border-radius: 0;
+        
+        /* スマホ時のみヘッダー画像 ＋ 文字視認性向上のための黒暗めオーバーレイフィルター */
+        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), var(--header-image);
+        background-size: cover;
+        background-position: center;
       }
 
       header h1 {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
+        color: #ffffff; /* 白文字に固定 */
+        font-weight: 800;
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5); /* 強力な文字影で浮き立たせる */
+      }
+      header p {
+        color: #f8fafc;
+        font-weight: 600;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
       }
 
       .filter-btn {
         padding: 5px 10px;
         font-size: 0.72rem;
+        background-color: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .filter-btn.active {
+        background-color: #0f172a;
+        color: #ffffff;
       }
     }
 
