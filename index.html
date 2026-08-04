@@ -38,25 +38,89 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ★ ここにさっきの .container の設定を追加 ★ */
-    .container {
-      max-width: 760px;
-      height: 80vh;
-      margin: 0 auto;
+  /* ★ 中央の小窓ウィンドウ ★ */
+    .container { 
+      width: 90%;                      /* 基本は画面幅の90% */
+      max-width: 760px;               /* PCでの最大幅 */
+      height: 85vh;                   /* ウィンドウの高さ */
+      margin: 0 auto; 
       padding: 24px;
       
-      background-color: rgba(255, 255, 255, 0.75); /* 白の半透明 */
-      backdrop-filter: blur(12px);                 /* すりガラス効果 */
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      background-color: rgba(255, 255, 255, 0.75); 
+      backdrop-filter: blur(12px);                 
+      border-radius: 16px;                         
+      border: 1px solid rgba(255, 255, 255, 0.5);   
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);  
       
-      overflow-y: auto; /* 小窓の中だけスクロール */
+      overflow-y: auto;                            /* 中身だけスクロール */
       display: flex;
       flex-direction: column;
     }
 
+/* ★ ヘッダーをウィンドウ最上部に固定 ★ */
+    header { 
+      position: sticky;
+      top: -24px;                     /* padding分を相殺して一番上に貼り付ける */
+      background: rgba(255, 255, 255, 0.95); /* スクロールした動画が透けないよう少し濃い白 */
+      backdrop-filter: blur(8px);
+      margin: -24px -24px 20px -24px;  /* ウィンドウの端まで背景色を広げる */
+      padding: 20px 16px 12px 16px;
+      text-align: center; 
+      z-index: 20;                     /* 動画カードより手前に表示 */
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+    }
+    header h1 { 
+      font-size: 1.6rem;               /* タイトルを少しすっきりしたサイズに */
+      font-weight: 700;
+      letter-spacing: 3px; 
+      margin-bottom: 4px; 
+      color: var(--text-main);
+    }
+    header p { 
+      color: var(--text-sub); 
+      font-size: 0.8rem; 
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
 
+    /* ★ フィルターボタンもヘッダー直下に固定 ★ */
+    .filter-container {
+      position: sticky;
+      top: 55px;                       /* ヘッダーの下にピタッと固定 */
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 0;
+      margin-bottom: 20px;
+      z-index: 10;
+      border-radius: 0 0 8px 8px;
+    }
+
+    /* ★ スマホ表示時（画面幅が600px以下）の特別調整 ★ */
+    @media (max-width: 600px) {
+      .container {
+        width: 82%;                    /* ウィンドウ幅を82%までキュッと絞り、左右にイラストを見せる */
+        padding: 16px;                 /* 余白を詰めてコンパクトに */
+        height: 88vh;
+      }
+      header {
+        top: -16px;
+        margin: -16px -16px 16px -16px;
+        padding: 16px 12px 8px 12px;
+      }
+      header h1 {
+        font-size: 1.2rem;             /* スマホに合わせて文字を少し小さく */
+        letter-spacing: 1.5px;
+      }
+      .filter-container {
+        top: 42px;
+        gap: 6px;                      /* ボタンの隙間を詰める */
+      }
+      .filter-btn {
+        padding: 6px 12px;             /* ボタン自体も少しコンパクトに */
+        font-size: 0.75rem;
+      }
+    }
+
+  
 .container::-webkit-scrollbar {
       width: 6px;
     }
