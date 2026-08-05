@@ -27,7 +27,7 @@
       color: var(--text-main);
       
       height: 100vh;
-      overflow: hidden; /* 画面全体のスクロールを消し、中央の小窓だけ動かす */
+      overflow: hidden; /* PC時は中央の小窓だけ動かす */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -52,7 +52,7 @@
       overflow-y: auto;                            /* 中身だけスクロール */
       display: flex;
       flex-direction: column;
-      touch-action: pan-y;                          /* 縦スクロールを優先しつつ横スワイプを検知可能にする */
+      -webkit-overflow-scrolling: touch;
     }
 
     /* ★ ヘッダー＋ボタン全体を最上部に完全固定（PC時は白地） ★ */
@@ -314,21 +314,26 @@
     .tag-動画 { background-color: #ffedd5; color: #9a3412; } /* オレンジ */
     .tag-default { background-color: #f1f5f9; color: #475569; }
 
-    /* スマホ表示時（画面幅600px以下） */
+    /* ★ スマホ表示時（画面幅600px以下）のスクロール修正 ★ */
     @media (max-width: 600px) {
       body {
         background-image: none;
         background-color: #f8fafc;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto; /* スマホ時は全体のスクロールを許可 */
       }
 
       .container {
         width: 100%;
-        height: 100vh;
+        height: auto;
+        min-height: 100vh;
         border-radius: 0;
         border: none;
         box-shadow: none;
         background-color: #ffffff;
-        padding: 0 12px 12px 12px;
+        padding: 0 12px 24px 12px;
+        overflow-y: visible; /* 固有のスクロールを解除 */
       }
       
       .sticky-header {
@@ -767,11 +772,9 @@
       const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
       const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
 
-      // 1. 現在のグリッドを横へフェードアウト
       grid.classList.add(outClass);
 
       setTimeout(() => {
-        // 2. データを更新
         currentFilter = newFilter;
         filterBtns.forEach(b => {
           if (b.dataset.filter === newFilter) {
@@ -782,11 +785,9 @@
         });
         renderWorks();
 
-        // 3. 次の要素を反対側へ配置準備
         grid.classList.remove(outClass);
         grid.classList.add(inClass);
 
-        // 4. 中央へ滑らかにスライドイン
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             grid.classList.remove(inClass);
@@ -807,28 +808,29 @@
       });
     });
 
-    // ★ 横スワイプ（フリック）時のアニメーション＆ループ処理 ★
+    // ★ タッチ操作（縦スクロールを邪魔せず横スワイプのみ判定） ★
     let touchStartX = 0;
     let touchStartY = 0;
 
-    container.addEventListener('touchstart', (e) => {
+    window.addEventListener('touchstart', (e) => {
       touchStartX = e.changedTouches[0].screenX;
       touchStartY = e.changedTouches[0].screenY;
     }, { passive: true });
 
-    container.addEventListener('touchend', (e) => {
+    window.addEventListener('touchend', (e) => {
       const touchEndX = e.changedTouches[0].screenX;
       const touchEndY = e.changedTouches[0].screenY;
 
       const diffX = touchEndX - touchStartX;
       const diffY = touchEndY - touchStartY;
 
-      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
+      // 横方向の移動が50px以上、かつ縦移動より横移動のほうが圧倒的に大きい場合のみ横スワイプと判定
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 2) {
         const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
         let nextIndex;
 
         if (diffX < 0) {
-          // 左スワイプ（次へ）：末尾なら先頭（0）へループ
+          // 左スワイプ（次へ）：末尾なら先頭へループ
           nextIndex = (currentIndex + 1) % filterBtns.length;
           setFilterWithAnimation(filterBtns[nextIndex].dataset.filter, 'left');
         } else if (diffX > 0) {
