@@ -23,9 +23,9 @@
       --theme-btn-border: #cbd5e1;
     }
 
-    /* ★ ダークモード時のカラー設定（背景画像もトーンダウン） ★ */
+    /* ★ ダークモード時のカラー設定 ★ */
     body.dark-mode {
-      --bg-overlay: rgba(15, 23, 42, 0.85); /* 背景の上に重ねる暗い膜 */
+      --bg-overlay: rgba(15, 23, 42, 0.85);
       --bg-container: rgba(15, 23, 42, 0.88);
       --bg-sticky: rgba(15, 23, 42, 0.96);
       --bg-card: #1e293b;
@@ -76,7 +76,21 @@
       transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
-    /* ★ 右上テーマ切り替えボタン（浮遊配置） ★ */
+    /* ★ ヘッダー＋ボタン全体を最上部に固定 ★ */
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: var(--bg-sticky);
+      backdrop-filter: blur(8px);
+      margin: 0 -24px 20px -24px;
+      padding: 20px 24px 12px 24px;
+      border-bottom: 1px solid var(--border-color);
+      border-radius: 16px 16px 0 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* ★ 右上テーマ切り替えボタン（固定ヘッダー内に配置） ★ */
     .theme-toggle-btn {
       position: absolute;
       top: 16px;
@@ -102,20 +116,6 @@
     }
     .theme-toggle-btn:active {
       transform: scale(0.92);
-    }
-
-    /* ★ ヘッダー＋ボタン全体を最上部に固定 ★ */
-    .sticky-header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background-color: var(--bg-sticky);
-      backdrop-filter: blur(8px);
-      margin: 0 -24px 20px -24px;
-      padding: 20px 24px 12px 24px;
-      border-bottom: 1px solid var(--border-color);
-      border-radius: 16px 16px 0 0;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
     header { 
@@ -730,11 +730,11 @@
 <body>
 
   <div class="container" id="main-container">
-    <!-- ★ 右上テーマ切り替えボタン ★ -->
-    <button class="theme-toggle-btn" id="theme-toggle-btn" title="テーマ切り替え">🌙</button>
-
     <!-- ★ ヘッダーとフィルターボタンの固定ブロック ★ -->
     <div class="sticky-header">
+      <!-- 右上テーマ切り替えボタン（固定ヘッダー内に移動） -->
+      <button class="theme-toggle-btn" id="theme-toggle-btn" title="テーマ切り替え">🌙</button>
+
       <header>
         <h1>ari's CREATOR PORTFOLIO</h1>
         <p>Music & Video Works</p>
