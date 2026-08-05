@@ -10,6 +10,7 @@
       --bg-image: url('bg.png'); 
 
       /* ライトモード（デフォルト）のカラー設定 */
+      --bg-overlay: transparent;
       --bg-container: rgba(255, 255, 255, 0.85);
       --bg-sticky: rgba(255, 255, 255, 0.95);
       --bg-card: #ffffff;
@@ -22,8 +23,9 @@
       --theme-btn-border: #cbd5e1;
     }
 
-    /* ★ ダークモード時のカラー設定 ★ */
+    /* ★ ダークモード時のカラー設定（背景画像もトーンダウン） ★ */
     body.dark-mode {
+      --bg-overlay: rgba(15, 23, 42, 0.85); /* 背景の上に重ねる暗い膜 */
       --bg-container: rgba(15, 23, 42, 0.88);
       --bg-sticky: rgba(15, 23, 42, 0.96);
       --bg-card: #1e293b;
@@ -39,13 +41,13 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", sans-serif;
-      background-image: var(--bg-image);
+      background-image: linear-gradient(var(--bg-overlay), var(--bg-overlay)), var(--bg-image);
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
       color: var(--text-main);
-      transition: color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.3s ease;
       
       min-height: 100vh;
       display: flex;
@@ -119,7 +121,7 @@
     header { 
       text-align: center; 
       margin-bottom: 12px;
-      padding-right: 20px; /* 右上ボタンとの重なり防止 */
+      padding-right: 20px;
       padding-left: 20px;
     }
     header h1 { 
@@ -165,10 +167,10 @@
       font-weight: 800;
     }
     .stat-client .stat-number {
-      color: #f59e0b; /* ゴールド */
+      color: #f59e0b;
     }
     .stat-collab .stat-number {
-      color: #a78bfa; /* ヴァイオレット */
+      color: #a78bfa;
     }
 
     /* クライアント向け一言案内 */
@@ -802,7 +804,7 @@
       "歌唱": "PLBgx-X3Yb8ybvcJRmKdcDVnu0lrRYKD_D",
       "動画": "PLSkUQA5PfT3s",
       "依頼実績": "PLeyLqz_ki5Sg",
-      "コラボ": "PLe1yTjYpxYG4" /* コラボ用プレイリストIDセット済み */
+      "コラボ": "PLe1yTjYpxYG4"
     };
 
     let allWorksMap = new Map();
