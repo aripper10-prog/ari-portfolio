@@ -417,7 +417,45 @@
    <header>
   <h1>ari's CREATOR PORTFOLIO</h1>
   <p>Music & Video Works</p>
-  
+      /* ★ クライアント向け一言案内のスタイル ★ */
+    .status-notice {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      background-color: rgba(241, 245, 249, 0.8);
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      line-height: 1.4;
+    }
+    .status-dot {
+      color: #16a34a; /* 受付中を表す緑色のドット */
+      font-size: 0.7rem;
+      margin-right: 2px;
+    }
+    .status-sub {
+      display: block;
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
+    /* スマホ表示時の微調整（必要に応じて） */
+    @media (max-width: 600px) {
+      .status-notice {
+        font-size: 0.68rem;
+        padding: 4px 10px;
+        background-color: rgba(15, 23, 42, 0.6); /* スマホの画像背景の上でも読めるようにダーク調に */
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      .status-sub {
+        color: #cbd5e1;
+        font-size: 0.62rem;
+      }
+    }
+
   <!-- ★ 補足：クライアント向けの一言案内 ★ -->
   <div class="status-notice">
     <span class="status-dot">●</span> ご依頼・ご相談は X(旧Twitter) のDMまで
