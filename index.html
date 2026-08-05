@@ -6,10 +6,8 @@
   <title>ari's CREATOR PORTFOLIO</title>
   <style>
     :root {
-      /* ★ 背景画像のファイル名（GitHubに上げた画像名） */
+      /* ★ PC背景画像のファイル名（GitHubに上げた画像名） */
       --bg-image: url('bg.png'); 
-      /* ★ ヘッダー専用画像のファイル名（1200x300px = 4:1 推奨） */
-      --header-image: url('header.png');
 
       /* カラー設定 */
       --text-main: #0f172a;
@@ -88,17 +86,17 @@
       text-transform: uppercase;
     }
 
-    /* ★ クライアント向け一言案内 ★ */
+    /* クライアント向け一言案内 */
     .status-notice {
       margin-top: 8px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       color: var(--text-sub);
       background-color: rgba(241, 245, 249, 0.85);
       display: inline-block;
-      padding: 6px 14px;
+      padding: 5px 12px;
       border-radius: 20px;
       border: 1px solid #cbd5e1;
-      line-height: 1.4;
+      line-height: 1.35;
     }
     .status-dot {
       color: #16a34a; /* 受付中の緑色 */
@@ -107,9 +105,9 @@
     }
     .status-sub {
       display: block;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       color: #64748b;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
     /* フィルターボタン & 並べ替え & Shop */
@@ -306,7 +304,7 @@
     @media (max-width: 600px) {
       body {
         background-image: none;
-        background-color: #ffffff; /* スマホ時は背景画像なし・白で塗りつぶし */
+        background-color: #f8fafc; /* スマホ背景は落ち着いた明るいグレー */
       }
 
       .container {
@@ -321,42 +319,39 @@
       
       .sticky-header {
         margin: 0 -16px 16px -16px;
-        padding: 16px 12px 10px 12px;
+        padding: 16px 16px 12px 16px;
         border-radius: 0;
         
-        background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), var(--header-image);
-        background-size: cover;
-        background-position: center;
-        aspect-ratio: 4 / 1.4;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        /* ★ スマホ時の画像・背景フィルターを廃止し白地のシンプルなヘッダーへ ★ */
+        background-image: none;
+        background-color: rgba(255, 255, 255, 0.98);
+        border-bottom: 1px solid #e2e8f0;
       }
 
       header {
         margin-bottom: 4px;
       }
       header h1 {
-        font-size: 1.15rem;
-        color: #ffffff;
+        font-size: 1.25rem;
+        color: var(--text-main);
         font-weight: 800;
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
+        text-shadow: none;
       }
       header p {
-        color: #f8fafc;
+        color: var(--text-sub);
         font-weight: 600;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+        text-shadow: none;
       }
 
       .status-notice {
         font-size: 0.65rem;
         padding: 4px 10px;
-        background-color: rgba(15, 23, 42, 0.65);
-        color: #ffffff;
-        border-color: rgba(255, 255, 255, 0.3);
+        background-color: #f1f5f9;
+        color: var(--text-sub);
+        border-color: #cbd5e1;
       }
       .status-sub {
-        color: #cbd5e1;
+        color: #64748b;
         font-size: 0.6rem;
       }
 
@@ -503,7 +498,7 @@
     // ★ 1. ここにご自身のYouTube APIキーを入力してください ★
     const API_KEY = "AIzaSyBflox0J4t8K9ChnspNSDJi5htIIYnydoQ";
 
-    // ★ 2. プレイリストID（「依頼実績」用プレイリストIDを追加してください） ★
+    // ★ 2. プレイリストID ★
     const PLAYLIST_IDS = {
       "作詞": "PLBgx-X3Yb8yZYlQ5P4crH4KCtkkMONvfz",
       "作曲": "PLBgx-X3Yb8yYFEgoWQD3RwJ3x0nAX13x8",
