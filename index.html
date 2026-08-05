@@ -112,31 +112,24 @@
       transform: translateY(-1px);
     }
 
-    /* ★ 上部フィルターボタンのカテゴリ別カラー統一 ★ */
-    /* すべて */
+    /* 上部フィルターボタンのカテゴリ別カラー */
     .filter-btn[data-filter="all"] { background-color: #ffffff; color: #475569; border-color: #cbd5e1; }
     .filter-btn[data-filter="all"].active { background-color: #0f172a; color: #ffffff; border-color: #0f172a; }
 
-    /* 作詞（青） */
     .filter-btn[data-filter="作詞"] { background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
     .filter-btn[data-filter="作詞"].active { background-color: #2563eb; color: #ffffff; border-color: #2563eb; }
 
-    /* 作曲（紫） */
     .filter-btn[data-filter="作曲"] { background-color: #faf5ff; color: #6b21a8; border-color: #e9d5ff; }
     .filter-btn[data-filter="作曲"].active { background-color: #9333ea; color: #ffffff; border-color: #9333ea; }
 
-    /* MIX（緑） */
     .filter-btn[data-filter="MIX"] { background-color: #f0fdf4; color: #166534; border-color: #bbf7d0; }
     .filter-btn[data-filter="MIX"].active { background-color: #16a34a; color: #ffffff; border-color: #16a34a; }
 
-    /* 歌唱（ピンク） */
     .filter-btn[data-filter="歌唱"] { background-color: #fdf2f8; color: #9d174d; border-color: #fbcfe8; }
     .filter-btn[data-filter="歌唱"].active { background-color: #db2777; color: #ffffff; border-color: #db2777; }
 
-    /* 動画（オレンジ） */
     .filter-btn[data-filter="動画"] { background-color: #fff7ed; color: #9a3412; border-color: #fed7aa; }
     .filter-btn[data-filter="動画"].active { background-color: #ea580c; color: #ffffff; border-color: #ea580c; }
-
 
     /* 並べ替えセレクトボックス */
     .sort-select {
@@ -214,6 +207,24 @@
       width: 100%; height: 100%;
       object-fit: cover;
     }
+
+    /* ★ 左上に配置する「CLIENT WORK」バッジ ★ */
+    .client-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: linear-gradient(135deg, #d97706, #b45309); /* 高級感あるゴールド・アンバー */
+      color: #ffffff;
+      font-size: 0.6rem;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      z-index: 2;
+      text-transform: uppercase;
+    }
+
     .play-icon {
       position: absolute;
       top: 50%; left: 50%;
@@ -250,7 +261,7 @@
       color: var(--text-main);
     }
     
-    /* ★ カード内の担当バッジ ★ */
+    /* カード内の担当バッジ */
     .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
     .tag {
       font-size: 0.68rem;
@@ -288,7 +299,6 @@
         padding: 16px 12px 10px 12px;
         border-radius: 0;
         
-        /* スマホ時：4:1の比率を維持してヘッダー枠へ綺麗に収める */
         background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), var(--header-image);
         background-size: cover;
         background-position: center;
@@ -303,9 +313,9 @@
       }
       header h1 {
         font-size: 1.2rem;
-        color: #ffffff; /* 白文字に固定 */
+        color: #ffffff;
         font-weight: 800;
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5); /* 強力な文字影 */
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
       }
       header p {
         color: #f8fafc;
@@ -373,10 +383,20 @@
     }
     .modal-roles {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 6px;
       font-size: 0.8rem;
       color: #94a3b8;
+    }
+    .modal-client-label {
+      color: #f59e0b;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-right: 4px;
     }
 
     .close-btn {
@@ -440,13 +460,14 @@
     // ★ 1. ここにご自身のYouTube APIキーを入力してください ★
     const API_KEY = "AIzaSyBflox0J4t8K9ChnspNSDJi5htIIYnydoQ";
 
-    // ★ 2. プレイリストID
+    // ★ 2. プレイリストID（「依頼実績」用プレイリストIDを追加してください） ★
     const PLAYLIST_IDS = {
       "作詞": "PLBgx-X3Yb8yZYlQ5P4crH4KCtkkMONvfz",
       "作曲": "PLBgx-X3Yb8yYFEgoWQD3RwJ3x0nAX13x8",
       "MIX":  "PLYIzDOQQK1Tk",
       "歌唱": "PLBgx-X3Yb8ybvcJRmKdcDVnu0lrRYKD_D",
-      "動画": "PLSkUQA5PfT3s"
+      "動画": "PLSkUQA5PfT3s",
+      "依頼実績": "PLeyLqz_ki5Sg" 
     };
 
     let allWorksMap = new Map();
@@ -484,7 +505,9 @@
 
               if (allWorksMap.has(videoId)) {
                 const existingWork = allWorksMap.get(videoId);
-                if (!existingWork.tags.includes(tagName)) {
+                if (tagName === "依頼実績") {
+                  existingWork.isClientWork = true;
+                } else if (!existingWork.tags.includes(tagName)) {
                   existingWork.tags.push(tagName);
                 }
               } else {
@@ -493,7 +516,8 @@
                   title: title,
                   thumbnail: thumbnail,
                   publishedAt: 0,
-                  tags: [tagName]
+                  isClientWork: (tagName === "依頼実績"),
+                  tags: (tagName === "依頼実績") ? [] : [tagName]
                 });
               }
             });
@@ -584,6 +608,7 @@
         card.className = 'card';
         card.innerHTML = `
           <div class="thumbnail-wrapper">
+            ${work.isClientWork ? '<div class="client-badge">Client Work</div>' : ''}
             <img src="${work.thumbnail}" alt="${work.title}" loading="lazy">
             <div class="play-icon"></div>
           </div>
@@ -602,7 +627,14 @@
     function openModal(work) {
       videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${work.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
       modalTitle.textContent = work.title;
-      modalRoles.innerHTML = `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
+      
+      let rolesHtml = '';
+      if (work.isClientWork) {
+        rolesHtml += `<span class="modal-client-label">⭐ Client Work (ご依頼実績)</span> `;
+      }
+      rolesHtml += `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
+      
+      modalRoles.innerHTML = rolesHtml;
       modal.classList.add('active');
     }
 
