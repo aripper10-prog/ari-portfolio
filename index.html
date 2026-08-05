@@ -27,7 +27,7 @@
       color: var(--text-main);
       
       height: 100vh;
-      overflow: hidden; /* PC時は中央の小窓だけ動かす */
+      overflow: hidden; /* PC時は画面全体を固定し、中央小窓だけをスクロール */
       display: flex;
       align-items: center;
       justify-content: center;
@@ -35,7 +35,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ★ 中央の小窓ウィンドウ ★ */
+    /* ★ 中央の小窓ウィンドウ（PC時：ホイールスクロール有効） ★ */
     .container { 
       width: 90%;                      
       max-width: 760px;               
@@ -49,23 +49,23 @@
       border: 1px solid rgba(255, 255, 255, 0.5);   
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);  
       
-      overflow-y: auto;                            /* 中身だけスクロール */
+      overflow-y: scroll;                           /* PCでのマウスホイールによる縦スクロールを明示的に強制指定 */
       display: flex;
       flex-direction: column;
       -webkit-overflow-scrolling: touch;
     }
 
-    /* ★ ヘッダー＋ボタン全体を最上部に完全固定（PC時は白地） ★ */
+    /* ★ ヘッダー＋ボタン全体を最上部に完全固定 ★ */
     .sticky-header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background-color: rgba(255, 255, 255, 0.95); /* PC時は白地 */
+      background-color: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
       margin: 0 -24px 20px -24px;       /* ウィンドウの左右端まで背景色を伸ばす */
       padding: 20px 24px 12px 24px;
       border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-      border-radius: 16px 16px 0 0;     /* ウィンドウの上部角丸に合わせる */
+      border-radius: 16px 16px 0 0;
     }
 
     header { 
@@ -120,7 +120,6 @@
       margin-top: 12px;
     }
     
-    /* ★ アニメーション1：ボタンのぷにっとした打感 ★ */
     .filter-btn {
       background-color: #ffffff;
       color: var(--text-sub);
@@ -138,7 +137,7 @@
       transform: translateY(-1px);
     }
     .filter-btn:active {
-      transform: scale(0.92); /* 押し込んだ瞬間にキュッと縮む */
+      transform: scale(0.92);
     }
 
     /* 上部フィルターボタンのカテゴリ別カラー */
@@ -226,7 +225,7 @@
     .grid.slide-in-left   { transform: translateX(-35px); opacity: 0; }
     .grid.slide-in-right  { transform: translateX(35px); opacity: 0; }
 
-    /* ★ アニメーション2 & 3：カードの浮き上がり ＋ ふわっと順次登場（Stagger） ★ */
+    /* 動画カード */
     .card {
       background-color: #ffffff;
       border-radius: 8px;
@@ -238,7 +237,6 @@
       display: flex;
       flex-direction: column;
       
-      /* 初期表示時のふわっと感用 */
       opacity: 0;
       transform: translateY(12px);
     }
@@ -247,7 +245,7 @@
       transform: translateY(0);
     }
     .card:hover {
-      transform: translateY(-4px); /* より滑らかに浮き上がる */
+      transform: translateY(-4px);
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
     }
 
@@ -256,9 +254,8 @@
       width: 100%;
       padding-top: 56.25%;
       background-color: #000;
-      overflow: hidden; /* 画像の拡大はみ出しを防止 */
+      overflow: hidden;
     }
-    /* 画像のズームイン効果 */
     .thumbnail-wrapper img {
       position: absolute;
       top: 0; left: 0;
@@ -267,10 +264,10 @@
       transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .card:hover .thumbnail-wrapper img {
-      transform: scale(1.05); /* 触れた時にじわっと拡大 */
+      transform: scale(1.05);
     }
 
-    /* ★ アニメーション4：Client Work バッジのさりげない光の反射（Shimmer） ★ */
+    /* Client Work バッジの光反射 */
     .client-badge {
       position: absolute;
       top: 8px;
@@ -332,7 +329,7 @@
     }
     .card:hover .play-icon { 
       background: var(--accent);
-      transform: translate(-50%, -50%) scale(1.08); /* 再生アイコンも少しポッと浮き出る */
+      transform: translate(-50%, -50%) scale(1.08);
     }
 
     .card-info { padding: 12px 10px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -364,7 +361,7 @@
     .tag-動画 { background-color: #ffedd5; color: #9a3412; } /* オレンジ */
     .tag-default { background-color: #f1f5f9; color: #475569; }
 
-    /* スマホ表示時（画面幅600px以下） */
+    /* ★ スマホ表示時（画面幅600px以下）のスクロール設定 ★ */
     @media (max-width: 600px) {
       body {
         background-image: none;
@@ -601,7 +598,7 @@
       </div>
     </div>
 
-    <!-- 動画一覧のグリッド（アニメーションラッパーで包む） -->
+    <!-- 動画一覧のグリッド -->
     <div class="grid-wrapper">
       <div class="grid" id="portfolio-grid">
         <div class="loading">動画を読み込み中...</div>
@@ -787,10 +784,9 @@
         card.addEventListener('click', () => openModal(work));
         grid.appendChild(card);
 
-        // ★ アニメーション：カードを順次ふわっと出現させる（Stagger） ★
         setTimeout(() => {
           card.classList.add('appear');
-        }, index * 40); /* 1枚ごとに40msズラして表示 */
+        }, index * 40);
       });
     }
 
