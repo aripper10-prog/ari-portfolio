@@ -88,6 +88,30 @@
       text-transform: uppercase;
     }
 
+    /* ★ クライアント向け一言案内 ★ */
+    .status-notice {
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text-sub);
+      background-color: rgba(241, 245, 249, 0.85);
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #cbd5e1;
+      line-height: 1.4;
+    }
+    .status-dot {
+      color: #16a34a; /* 受付中の緑色 */
+      font-size: 0.7rem;
+      margin-right: 2px;
+    }
+    .status-sub {
+      display: block;
+      font-size: 0.68rem;
+      color: #64748b;
+      margin-top: 2px;
+    }
+
     /* フィルターボタン & 並べ替え & Shop */
     .filter-container {
       display: flex;
@@ -95,6 +119,7 @@
       justify-content: center;
       align-items: center;
       gap: 8px;
+      margin-top: 12px;
     }
     .filter-btn {
       background-color: #ffffff;
@@ -208,12 +233,12 @@
       object-fit: cover;
     }
 
-    /* ★ 左上に配置する「CLIENT WORK」バッジ ★ */
+    /* 左上に配置する「CLIENT WORK」バッジ */
     .client-badge {
       position: absolute;
       top: 8px;
       left: 8px;
-      background: linear-gradient(135deg, #d97706, #b45309); /* 高級感あるゴールド・アンバー */
+      background: linear-gradient(135deg, #d97706, #b45309);
       color: #ffffff;
       font-size: 0.6rem;
       font-weight: 800;
@@ -302,17 +327,17 @@
         background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.55)), var(--header-image);
         background-size: cover;
         background-position: center;
-        aspect-ratio: 4 / 1.2;
+        aspect-ratio: 4 / 1.4;
         display: flex;
         flex-direction: column;
         justify-content: center;
       }
 
       header {
-        margin-bottom: 8px;
+        margin-bottom: 4px;
       }
       header h1 {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         color: #ffffff;
         font-weight: 800;
         text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 12px rgba(0, 0, 0, 0.5);
@@ -321,6 +346,18 @@
         color: #f8fafc;
         font-weight: 600;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+      }
+
+      .status-notice {
+        font-size: 0.65rem;
+        padding: 4px 10px;
+        background-color: rgba(15, 23, 42, 0.65);
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      .status-sub {
+        color: #cbd5e1;
+        font-size: 0.6rem;
       }
 
       .filter-btn {
@@ -414,55 +451,16 @@
   <div class="container" id="main-container">
     <!-- ★ ヘッダーとフィルターボタンの固定ブロック ★ -->
     <div class="sticky-header">
-   <header>
-  <h1>ari's CREATOR PORTFOLIO</h1>
-  <p>Music & Video Works</p>
-      /* ★ クライアント向け一言案内のスタイル ★ */
-    .status-notice {
-      margin-top: 8px;
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      background-color: rgba(241, 245, 249, 0.8);
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 1px solid #cbd5e1;
-      line-height: 1.4;
-    }
-    .status-dot {
-      color: #16a34a; /* 受付中を表す緑色のドット */
-      font-size: 0.7rem;
-      margin-right: 2px;
-    }
-    .status-sub {
-      display: block;
-      font-size: 0.68rem;
-      color: #64748b;
-      margin-top: 2px;
-    }
+      <header>
+        <h1>ari's CREATOR PORTFOLIO</h1>
+        <p>Music & Video Works</p>
 
-    /* スマホ表示時の微調整（必要に応じて） */
-    @media (max-width: 600px) {
-      .status-notice {
-        font-size: 0.68rem;
-        padding: 4px 10px;
-        background-color: rgba(15, 23, 42, 0.6); /* スマホの画像背景の上でも読めるようにダーク調に */
-        color: #ffffff;
-        border-color: rgba(255, 255, 255, 0.3);
-      }
-      .status-sub {
-        color: #cbd5e1;
-        font-size: 0.62rem;
-      }
-    }
-
-  <!-- ★ 補足：クライアント向けの一言案内 ★ -->
-  <div class="status-notice">
-    <span class="status-dot">●</span> ご依頼・ご相談は X(旧Twitter) のDMまで
-    <span class="status-sub">（概要・納期・予算感等を添えてお送りください）</span>
-  </div>
-</header>
-
+        <!-- ★ 補足：クライアント向けの一言案内 ★ -->
+        <div class="status-notice">
+          <span class="status-dot">●</span> ご依頼・ご相談は X(旧Twitter) のDMまで
+          <span class="status-sub">（概要・納期・予算感等を添えてお送りください）</span>
+        </div>
+      </header>
 
       <div class="filter-container" id="filter-container">
         <button class="filter-btn active" data-filter="all">すべて</button>
