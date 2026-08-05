@@ -193,14 +193,28 @@
       opacity: 0.95;
     }
 
+    /* ★ 横スワイプ用アニメーションラッパー ★ */
+    .grid-wrapper {
+      overflow: hidden;
+      width: 100%;
+    }
+
     /* 作品グリッド */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
+      transition: transform 0.22s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.22s ease;
+      will-change: transform, opacity;
     }
     @media (min-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+    /* ★ スワイプ切り替え時の移動クラス ★ */
+    .grid.slide-out-left  { transform: translateX(-35px); opacity: 0; }
+    .grid.slide-out-right { transform: translateX(35px); opacity: 0; }
+    .grid.slide-in-left   { transform: translateX(-35px); opacity: 0; }
+    .grid.slide-in-right  { transform: translateX(35px); opacity: 0; }
 
     /* 動画カード */
     .card {
@@ -398,7 +412,7 @@
       }
     }
 
-    /* ★ モーダル（アニメーション対応） ★ */
+    /* モーダル */
     .modal {
       display: none;
       position: fixed;
@@ -425,14 +439,12 @@
       overflow: hidden;
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
       
-      /* ★ アニメーション初期設定（縮小・透明状態） ★ */
       opacity: 0;
       transform: scale(0.6) translateY(20px);
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
       will-change: transform, opacity;
     }
 
-    /* 開いた時のアニメーション */
     .modal.active .modal-content {
       opacity: 1;
       transform: scale(1) translateY(0);
@@ -450,7 +462,7 @@
       width: 100%; height: 100%;
       border: 0;
       opacity: 0;
-      transition: opacity 0.2s ease 0.15s; /* 拡大が終わったタイミングで動画をふわっと表示 */
+      transition: opacity 0.2s ease 0.15s;
     }
     .modal.active .video-container iframe {
       opacity: 1;
@@ -534,9 +546,11 @@
       </div>
     </div>
 
-    <!-- 動画一覧のグリッド -->
-    <div class="grid" id="portfolio-grid">
-      <div class="loading">動画を読み込み中...</div>
+    <!-- 動画一覧のグリッド（アニメーションラッパーで包む） -->
+    <div class="grid-wrapper">
+      <div class="grid" id="portfolio-grid">
+        <div class="loading">動画を読み込み中...</div>
+      </div>
     </div>
   </div>
 
@@ -572,7 +586,6 @@
     const container = document.getElementById('main-container');
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
-    const modalContent = document.getElementById('modal-content');
     const videoContainer = document.getElementById('video-container');
     const modalTitle = document.getElementById('modal-title');
     const modalRoles = document.getElementById('modal-roles');
@@ -716,13 +729,12 @@
             </div>
           </div>
         `;
-        card.addEventListener('click', (e) => openModal(work, card));
+        card.addEventListener('click', () => openModal(work));
         grid.appendChild(card);
       });
     }
 
-    // ★ ズーム拡大アニメーション付きでモーダルを開く処理 ★
-    function openModal(work, clickedCard) {
+    function openModal(work) {
       modalTitle.textContent = work.title;
       
       let rolesHtml = '';
@@ -732,50 +744,70 @@
       rolesHtml += `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
       modalRoles.innerHTML = rolesHtml;
 
-      // 動画iframeのセット
       videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${work.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
 
-      // モーダル表示開始
       modal.style.display = 'flex';
-      
-      // 次のフレームでアニメーションクラスを付与（滑らかに拡大）
       requestAnimationFrame(() => {
         modal.classList.add('active');
       });
     }
 
-    // ★ 閉じる処理 ★
     function closeModal() {
       modal.classList.remove('active');
-      
-      // アニメーション完了後に要素を初期化
       setTimeout(() => {
         modal.style.display = 'none';
         videoContainer.innerHTML = '';
       }, 250);
     }
 
-    // フィルターボタンの表示更新および切り替え処理
-    function setFilter(filterName) {
-      currentFilter = filterName;
-      filterBtns.forEach(b => {
-        if (b.dataset.filter === filterName) {
-          b.classList.add('active');
-        } else {
-          b.classList.remove('active');
-        }
-      });
-      renderWorks();
+    // ★ 滑らかなスライドアニメーション付きタグ切り替え処理 ★
+    function setFilterWithAnimation(newFilter, direction = 'left') {
+      if (currentFilter === newFilter) return;
+
+      const outClass = direction === 'left' ? 'slide-out-left' : 'slide-out-right';
+      const inClass = direction === 'left' ? 'slide-in-right' : 'slide-in-left';
+
+      // 1. 現在のグリッドを横へフェードアウト
+      grid.classList.add(outClass);
+
+      setTimeout(() => {
+        // 2. データを更新
+        currentFilter = newFilter;
+        filterBtns.forEach(b => {
+          if (b.dataset.filter === newFilter) {
+            b.classList.add('active');
+          } else {
+            b.classList.remove('active');
+          }
+        });
+        renderWorks();
+
+        // 3. 次の要素を反対側へ配置準備
+        grid.classList.remove(outClass);
+        grid.classList.add(inClass);
+
+        // 4. 中央へ滑らかにスライドイン
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            grid.classList.remove(inClass);
+          });
+        });
+      }, 180);
     }
 
     // フィルターボタンクリックイベント
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        setFilter(btn.dataset.filter);
+        const newFilter = btn.dataset.filter;
+        const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
+        const newIndex = filterBtns.findIndex(b => b.dataset.filter === newFilter);
+        const direction = newIndex > currentIndex ? 'left' : 'right';
+        
+        setFilterWithAnimation(newFilter, direction);
       });
     });
 
-    // 横スワイプ（フリック）によるタグ切り替え処理
+    // ★ 横スワイプ（フリック）時のアニメーション連携 ★
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -791,13 +823,15 @@
       const diffX = touchEndX - touchStartX;
       const diffY = touchEndY - touchStartY;
 
-      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+      if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
         const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
         
         if (diffX < 0 && currentIndex < filterBtns.length - 1) {
-          setFilter(filterBtns[currentIndex + 1].dataset.filter);
+          // 左スワイプ -> 次のタブへ（左へスライド）
+          setFilterWithAnimation(filterBtns[currentIndex + 1].dataset.filter, 'left');
         } else if (diffX > 0 && currentIndex > 0) {
-          setFilter(filterBtns[currentIndex - 1].dataset.filter);
+          // 右スワイプ -> 前のタブへ（右へスライド）
+          setFilterWithAnimation(filterBtns[currentIndex - 1].dataset.filter, 'right');
         }
       }
     }, { passive: true });
