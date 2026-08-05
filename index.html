@@ -193,7 +193,7 @@
       opacity: 0.95;
     }
 
-    /* 作品グリッド（動画カードの配列：デフォルトPCは1~3列） */
+    /* 作品グリッド */
     .grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -300,7 +300,7 @@
     .tag-動画 { background-color: #ffedd5; color: #9a3412; } /* オレンジ */
     .tag-default { background-color: #f1f5f9; color: #475569; }
 
-    /* ★ スマホ表示時（画面幅600px以下）の特別な処理（2列化） ★ */
+    /* スマホ表示時（画面幅600px以下） */
     @media (max-width: 600px) {
       body {
         background-image: none;
@@ -366,13 +366,11 @@
         font-size: 0.72rem;
       }
 
-      /* ★ スマホ画面でグリッドを強制的に2列にする処理 ★ */
       .grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 10px !important;
       }
 
-      /* 2列カード内の余白・文字サイズの最適化 */
       .card-info {
         padding: 8px 6px;
       }
@@ -400,38 +398,64 @@
       }
     }
 
-    /* モーダル */
+    /* ★ モーダル（アニメーション対応） ★ */
     .modal {
       display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.85);
+      background-color: rgba(0,0,0,0);
       z-index: 1000;
       align-items: center;
       justify-content: center;
       padding: 20px;
+      transition: background-color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .modal.active { display: flex; }
+    .modal.active { 
+      display: flex; 
+      background-color: rgba(0,0,0,0.85);
+    }
+
     .modal-content {
       position: relative;
       width: 100%;
       max-width: 900px;
       background: #0f172a;
-      border-radius: 8px;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      
+      /* ★ アニメーション初期設定（縮小・透明状態） ★ */
+      opacity: 0;
+      transform: scale(0.6) translateY(20px);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+      will-change: transform, opacity;
     }
+
+    /* 開いた時のアニメーション */
+    .modal.active .modal-content {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
     .video-container {
       position: relative;
       padding-top: 56.25%;
       height: 0;
+      background: #000;
     }
     .video-container iframe {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
       border: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease 0.15s; /* 拡大が終わったタイミングで動画をふわっと表示 */
     }
+    .modal.active .video-container iframe {
+      opacity: 1;
+    }
+
     .modal-meta {
       padding: 14px 16px;
       background: #0f172a;
@@ -468,7 +492,10 @@
       color: #fff;
       font-size: 28px;
       cursor: pointer;
+      opacity: 0.8;
+      transition: opacity 0.2s;
     }
+    .close-btn:hover { opacity: 1; }
     .loading { text-align: center; color: var(--text-sub); font-size: 1.1rem; padding: 40px; grid-column: 1 / -1; }
   </style>
 </head>
@@ -515,7 +542,7 @@
 
   <!-- 動画再生モーダル -->
   <div class="modal" id="video-modal">
-    <div class="modal-content">
+    <div class="modal-content" id="modal-content">
       <span class="close-btn" id="modal-close">&times;</span>
       <div class="video-container" id="video-container"></div>
       <div class="modal-meta">
@@ -545,6 +572,7 @@
     const container = document.getElementById('main-container');
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
+    const modalContent = document.getElementById('modal-content');
     const videoContainer = document.getElementById('video-container');
     const modalTitle = document.getElementById('modal-title');
     const modalRoles = document.getElementById('modal-roles');
@@ -688,13 +716,13 @@
             </div>
           </div>
         `;
-        card.addEventListener('click', () => openModal(work));
+        card.addEventListener('click', (e) => openModal(work, card));
         grid.appendChild(card);
       });
     }
 
-    function openModal(work) {
-      videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${work.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    // ★ ズーム拡大アニメーション付きでモーダルを開く処理 ★
+    function openModal(work, clickedCard) {
       modalTitle.textContent = work.title;
       
       let rolesHtml = '';
@@ -702,14 +730,29 @@
         rolesHtml += `<span class="modal-client-label">⭐ Client Work (ご依頼実績)</span> `;
       }
       rolesHtml += `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
-      
       modalRoles.innerHTML = rolesHtml;
-      modal.classList.add('active');
+
+      // 動画iframeのセット
+      videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${work.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+
+      // モーダル表示開始
+      modal.style.display = 'flex';
+      
+      // 次のフレームでアニメーションクラスを付与（滑らかに拡大）
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+      });
     }
 
+    // ★ 閉じる処理 ★
     function closeModal() {
       modal.classList.remove('active');
-      videoContainer.innerHTML = '';
+      
+      // アニメーション完了後に要素を初期化
+      setTimeout(() => {
+        modal.style.display = 'none';
+        videoContainer.innerHTML = '';
+      }, 250);
     }
 
     // フィルターボタンの表示更新および切り替え処理
