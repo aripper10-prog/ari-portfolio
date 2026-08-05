@@ -34,11 +34,11 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ★ 中央の小窓ウィンドウ（PC時：ホイールスクロール完全対応） ★ */
+    /* ★ 中央の小窓ウィンドウ（PC時：ホイール・スクロールバー操作完全正常化） ★ */
     .container { 
       width: 90%;                      
       max-width: 760px;               
-      max-height: 85vh; /* heightではなくmax-heightに修正 */
+      height: 85vh; /* 高さ固定でスクロール領域を明確化 */
       margin: 0 auto; 
       padding: 0 24px 24px 24px;
       
@@ -48,9 +48,8 @@
       border: 1px solid rgba(255, 255, 255, 0.5);   
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);  
       
-      overflow-y: scroll; /* マウスホイールの入力を直接受ける設定 */
-      display: flex;
-      flex-direction: column;
+      overflow-y: auto; /* マウスホイール・ドラッグ操作を直接受け付ける */
+      position: relative;
     }
 
     /* ★ ヘッダー＋ボタン全体を最上部に固定 ★ */
@@ -359,7 +358,7 @@
     .tag-動画 { background-color: #fff7ed; color: #9a3412; } /* オレンジ */
     .tag-default { background-color: #f1f5f9; color: #475569; }
 
-    /* ★ スマホ表示時（画面幅600px以下）のスタイル再定義 ★ */
+    /* ★ スマホ表示時（画面幅600px以下）のスタイル ★ */
     @media (max-width: 600px) {
       body {
         background-image: none;
@@ -370,14 +369,14 @@
 
       .container {
         width: 100%;
-        max-height: none; /* スマホでは高制限を解除 */
         height: auto;
+        min-height: 100vh;
         border-radius: 0;
         border: none;
         box-shadow: none;
         background-color: #ffffff;
         padding: 0 12px 24px 12px;
-        overflow-y: visible; /* 画面全体で自然にスワイプさせる */
+        overflow-y: visible;
       }
       
       .sticky-header {
@@ -856,7 +855,7 @@
       });
     });
 
-    // ★ 縦スクロールを絶対に妨害しない安全な横スワイプ判定 ★
+    // ★ スマホ等での横スワイプ判定（縦スクロールを最優先） ★
     let touchStartX = 0;
     let touchStartY = 0;
 
