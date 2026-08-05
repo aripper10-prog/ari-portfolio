@@ -34,7 +34,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ★ 中央の小窓ウィンドウ（PC時：ホイール・スクロールバー操作完全正常化） ★ */
+    /* ★ 中央の小窓ウィンドウ ★ */
     .container { 
       width: 90%;                      
       max-width: 760px;               
@@ -83,12 +83,13 @@
       text-transform: uppercase;
     }
 
-    /* ★ 実績カウンター表示 ★ */
+    /* ★ 実績自動カウンター ★ */
     .stats-counter {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 8px;
       margin-bottom: 6px;
       font-size: 0.72rem;
@@ -110,7 +111,10 @@
       font-weight: 800;
     }
     .stat-client .stat-number {
-      color: #d97706; /* 実績数はアンバーゴールド */
+      color: #d97706; /* ゴールド */
+    }
+    .stat-collab .stat-number {
+      color: #7c3aed; /* ヴァイオレット */
     }
 
     /* クライアント向け一言案内 */
@@ -293,11 +297,19 @@
       transform: scale(1.05);
     }
 
-    /* Client Work バッジの光反射 */
-    .client-badge {
+    /* ★ 左上バッジ共通設定 ★ */
+    .badge-container {
       position: absolute;
       top: 8px;
       left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+
+    /* Client Work バッジ（ゴールド・力強いゴシック体） */
+    .client-badge {
       background: linear-gradient(135deg, #d97706, #b45309);
       color: #ffffff;
       font-size: 0.6rem;
@@ -306,11 +318,30 @@
       border-radius: 4px;
       letter-spacing: 0.5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-      z-index: 2;
       text-transform: uppercase;
       overflow: hidden;
+      position: relative;
+      font-family: inherit;
     }
-    .client-badge::after {
+
+    /* Collab バッジ（ヴァイオレットパープル・スタイリッシュな角丸デザイン・フォント差別化） */
+    .collab-badge {
+      background: linear-gradient(135deg, #7c3aed, #5b21b6);
+      color: #ffffff;
+      font-size: 0.58rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px; /* 丸みをつけて差別化 */
+      letter-spacing: 1.2px; /* 文字間隔を広げて洗練されたスタイルに */
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+      text-transform: uppercase;
+      overflow: hidden;
+      position: relative;
+      font-family: "Segoe UI", system-ui, sans-serif; /* カチッとしたフォントに切り替え */
+    }
+
+    /* 光の反射（Shimmer）共通アニメーション */
+    .client-badge::after, .collab-badge::after {
       content: '';
       position: absolute;
       top: -50%;
@@ -320,7 +351,7 @@
       background: linear-gradient(
         60deg,
         transparent 30%,
-        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0.45) 50%,
         transparent 70%
       );
       transform: rotate(30deg);
@@ -433,16 +464,16 @@
       }
 
       .stats-counter {
-        gap: 8px;
-        font-size: 0.65rem;
+        gap: 6px;
+        font-size: 0.63rem;
         margin-top: 6px;
         margin-bottom: 4px;
       }
       .stat-item {
-        padding: 2px 8px;
+        padding: 2px 7px;
       }
       .stat-number {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
       }
 
       .status-notice {
@@ -487,12 +518,21 @@
         font-size: 0.6rem;
         padding: 2px 5px;
       }
+      
+      .badge-container {
+        top: 4px;
+        left: 4px;
+        gap: 2px;
+      }
       .client-badge {
         font-size: 0.5rem;
         padding: 2px 5px;
-        top: 4px;
-        left: 4px;
       }
+      .collab-badge {
+        font-size: 0.48rem;
+        padding: 2px 6px;
+      }
+
       .play-icon {
         width: 32px;
         height: 32px;
@@ -587,6 +627,15 @@
       gap: 3px;
       margin-right: 4px;
     }
+    .modal-collab-label {
+      color: #a78bfa;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      margin-right: 4px;
+    }
 
     .close-btn {
       position: absolute;
@@ -614,6 +663,7 @@
         <div class="stats-counter" id="stats-counter">
           <div class="stat-item">Total: <span class="stat-number" id="total-count">-</span> Works</div>
           <div class="stat-item stat-client">Client Work: <span class="stat-number" id="client-count">-</span> Works</div>
+          <div class="stat-item stat-collab">Collab: <span class="stat-number" id="collab-count">-</span> Works</div>
         </div>
 
         <!-- ★ 補足：クライアント向けの一言案内 ★ -->
@@ -673,7 +723,8 @@
       "MIX":  "PLYIzDOQQK1Tk",
       "歌唱": "PLBgx-X3Yb8ybvcJRmKdcDVnu0lrRYKD_D",
       "動画": "PLSkUQA5PfT3s",
-      "依頼実績": "PLeyLqz_ki5Sg" 
+      "依頼実績": "PLeyLqz_ki5Sg",
+      "コラボ": "PLe1yTjYpxYG4" /* ← ここにコラボ用IDを貼り付けてください */
     };
 
     let allWorksMap = new Map();
@@ -690,10 +741,11 @@
     const sortSelect = document.getElementById('sort-select');
     const totalCountEl = document.getElementById('total-count');
     const clientCountEl = document.getElementById('client-count');
+    const collabCountEl = document.getElementById('collab-count');
 
     // ページネーション（51個目以降もループして全件取得する処理）
     async function fetchPlaylist(tagName, playlistId) {
-      if (!playlistId) return;
+      if (!playlistId || playlistId.includes("ここに")) return;
 
       let nextPageToken = '';
       
@@ -715,6 +767,8 @@
                 const existingWork = allWorksMap.get(videoId);
                 if (tagName === "依頼実績") {
                   existingWork.isClientWork = true;
+                } else if (tagName === "コラボ") {
+                  existingWork.isCollabWork = true;
                 } else if (!existingWork.tags.includes(tagName)) {
                   existingWork.tags.push(tagName);
                 }
@@ -725,7 +779,8 @@
                   thumbnail: thumbnail,
                   publishedAt: 0,
                   isClientWork: (tagName === "依頼実績"),
-                  tags: (tagName === "依頼実績") ? [] : [tagName]
+                  isCollabWork: (tagName === "コラボ"),
+                  tags: (tagName === "依頼実績" || tagName === "コラボ") ? [] : [tagName]
                 });
               }
             });
@@ -775,9 +830,11 @@
       const worksArray = Array.from(allWorksMap.values());
       const totalCount = worksArray.length;
       const clientCount = worksArray.filter(w => w.isClientWork).length;
+      const collabCount = worksArray.filter(w => w.isCollabWork).length;
 
       totalCountEl.textContent = totalCount;
       clientCountEl.textContent = clientCount;
+      collabCountEl.textContent = collabCount;
     }
 
     async function fetchAllPlaylists() {
@@ -790,7 +847,7 @@
 
       await Promise.all(promises);
       await fetchVideoDetails();
-      updateStatsCounter(); /* カウンター数値をセット */
+      updateStatsCounter();
       renderWorks();
     }
 
@@ -825,9 +882,19 @@
       filteredWorks.forEach((work, index) => {
         const card = document.createElement('div');
         card.className = 'card';
+
+        // バッジHTMLの生成
+        let badgesHtml = '';
+        if (work.isClientWork || work.isCollabWork) {
+          badgesHtml += '<div class="badge-container">';
+          if (work.isClientWork) badgesHtml += '<div class="client-badge">Client Work</div>';
+          if (work.isCollabWork) badgesHtml += '<div class="collab-badge">Collab</div>';
+          badgesHtml += '</div>';
+        }
+
         card.innerHTML = `
           <div class="thumbnail-wrapper">
-            ${work.isClientWork ? '<div class="client-badge">Client Work</div>' : ''}
+            ${badgesHtml}
             <img src="${work.thumbnail}" alt="${work.title}" loading="lazy">
             <div class="play-icon"></div>
           </div>
@@ -853,6 +920,9 @@
       let rolesHtml = '';
       if (work.isClientWork) {
         rolesHtml += `<span class="modal-client-label">⭐ Client Work (ご依頼実績)</span> `;
+      }
+      if (work.isCollabWork) {
+        rolesHtml += `<span class="modal-collab-label">🤝 Collaboration (コラボ作品)</span> `;
       }
       rolesHtml += `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
       modalRoles.innerHTML = rolesHtml;
