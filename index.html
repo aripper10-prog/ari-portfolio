@@ -193,7 +193,7 @@
       opacity: 0.95;
     }
 
-    /* ★ 横スワイプ用アニメーションラッパー ★ */
+    /* 横スワイプ用アニメーションラッパー */
     .grid-wrapper {
       overflow: hidden;
       width: 100%;
@@ -210,7 +210,7 @@
     @media (min-width: 500px) { .grid { grid-template-columns: repeat(2, 1fr); } }
     @media (min-width: 700px) { .grid { grid-template-columns: repeat(3, 1fr); } }
 
-    /* ★ スワイプ切り替え時の移動クラス ★ */
+    /* スワイプ切り替え時の移動クラス */
     .grid.slide-out-left  { transform: translateX(-35px); opacity: 0; }
     .grid.slide-out-right { transform: translateX(35px); opacity: 0; }
     .grid.slide-in-left   { transform: translateX(-35px); opacity: 0; }
@@ -760,7 +760,7 @@
       }, 250);
     }
 
-    // ★ 滑らかなスライドアニメーション付きタグ切り替え処理 ★
+    // 滑らかなスライドアニメーション付きタグ切り替え処理
     function setFilterWithAnimation(newFilter, direction = 'left') {
       if (currentFilter === newFilter) return;
 
@@ -807,7 +807,7 @@
       });
     });
 
-    // ★ 横スワイプ（フリック）時のアニメーション連携 ★
+    // ★ 横スワイプ（フリック）時のアニメーション＆ループ処理 ★
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -825,13 +825,16 @@
 
       if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.4) {
         const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
-        
-        if (diffX < 0 && currentIndex < filterBtns.length - 1) {
-          // 左スワイプ -> 次のタブへ（左へスライド）
-          setFilterWithAnimation(filterBtns[currentIndex + 1].dataset.filter, 'left');
-        } else if (diffX > 0 && currentIndex > 0) {
-          // 右スワイプ -> 前のタブへ（右へスライド）
-          setFilterWithAnimation(filterBtns[currentIndex - 1].dataset.filter, 'right');
+        let nextIndex;
+
+        if (diffX < 0) {
+          // 左スワイプ（次へ）：末尾なら先頭（0）へループ
+          nextIndex = (currentIndex + 1) % filterBtns.length;
+          setFilterWithAnimation(filterBtns[nextIndex].dataset.filter, 'left');
+        } else if (diffX > 0) {
+          // 右スワイプ（前へ）：先頭なら末尾へループ
+          nextIndex = (currentIndex - 1 + filterBtns.length) % filterBtns.length;
+          setFilterWithAnimation(filterBtns[nextIndex].dataset.filter, 'right');
         }
       }
     }, { passive: true });
