@@ -54,6 +54,7 @@
       overflow-y: auto;                            /* 中身だけスクロール */
       display: flex;
       flex-direction: column;
+      touch-action: pan-y;                          /* 縦スクロールを優先しつつ横スワイプを検知可能にする */
     }
 
     /* ★ ヘッダー＋ボタン全体を最上部に完全固定（PC時は白地） ★ */
@@ -346,7 +347,7 @@
 </head>
 <body>
 
-  <div class="container">
+  <div class="container" id="main-container">
     <!-- ★ ヘッダーとフィルターボタンの固定ブロック ★ -->
     <div class="sticky-header">
       <header>
@@ -368,7 +369,7 @@
           <option value="oldest">古い順</option>
         </select>
 
-        <!-- ★ 物販リンク（Shopボタン） ※hrefを実際のショップURLに変更してください ★ -->
+        <!-- ★ 物販リンク（Shopボタン） ★ -->
         <a href="https://arirevive.booth.pm/" target="_blank" rel="noopener noreferrer" class="shop-btn">Shop ↗</a>
       </div>
     </div>
@@ -403,11 +404,12 @@
     let allWorksMap = new Map();
     let currentFilter = 'all';
 
+    const container = document.getElementById('main-container');
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
     const videoContainer = document.getElementById('video-container');
     const closeBtn = document.getElementById('modal-close');
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
     const sortSelect = document.getElementById('sort-select');
 
     // ページネーション（51個目以降もループして全件取得する処理）
@@ -551,15 +553,55 @@
       videoContainer.innerHTML = '';
     }
 
-    // フィルターボタン切り替え
+    // フィルターボタンの表示更新および切り替え処理
+    function setFilter(filterName) {
+      currentFilter = filterName;
+      filterBtns.forEach(b => {
+        if (b.dataset.filter === filterName) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      renderWorks();
+    }
+
+    // フィルターボタンクリックイベント
     filterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        renderWorks();
+        setFilter(btn.dataset.filter);
       });
     });
+
+    // ★ 横スワイプ（フリック）によるタグ切り替え処理 ★
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    container.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    container.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      // 縦スクロール操作（diffYが大きい時）はスキップし、横方向に一定以上動いた時だけ反応させる
+      if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+        const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
+        
+        if (diffX < 0 && currentIndex < filterBtns.length - 1) {
+          // 左スワイプ -> 次のタグへ
+          setFilter(filterBtns[currentIndex + 1].dataset.filter);
+        } else if (diffX > 0 && currentIndex > 0) {
+          // 右スワイプ -> 前のタグへ
+          setFilter(filterBtns[currentIndex - 1].dataset.filter);
+        }
+      }
+    }, { passive: true });
 
     // ソート順切り替えイベント
     sortSelect.addEventListener('change', () => {
