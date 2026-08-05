@@ -104,18 +104,39 @@
       border-radius: 20px;
       cursor: pointer;
       font-size: 0.8rem;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.2s ease;
     }
     .filter-btn:hover {
-      color: var(--text-main);
-      border-color: #94a3b8;
+      opacity: 0.85;
+      transform: translateY(-1px);
     }
-    .filter-btn.active {
-      background-color: var(--text-main);
-      color: #ffffff;
-      border-color: var(--text-main);
-    }
+
+    /* ★ 上部フィルターボタンのカテゴリ別カラー統一 ★ */
+    /* すべて */
+    .filter-btn[data-filter="all"] { background-color: #ffffff; color: #475569; border-color: #cbd5e1; }
+    .filter-btn[data-filter="all"].active { background-color: #0f172a; color: #ffffff; border-color: #0f172a; }
+
+    /* 作詞（青） */
+    .filter-btn[data-filter="作詞"] { background-color: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+    .filter-btn[data-filter="作詞"].active { background-color: #2563eb; color: #ffffff; border-color: #2563eb; }
+
+    /* 作曲（紫） */
+    .filter-btn[data-filter="作曲"] { background-color: #faf5ff; color: #6b21a8; border-color: #e9d5ff; }
+    .filter-btn[data-filter="作曲"].active { background-color: #9333ea; color: #ffffff; border-color: #9333ea; }
+
+    /* MIX（緑） */
+    .filter-btn[data-filter="MIX"] { background-color: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+    .filter-btn[data-filter="MIX"].active { background-color: #16a34a; color: #ffffff; border-color: #16a34a; }
+
+    /* 歌唱（ピンク） */
+    .filter-btn[data-filter="歌唱"] { background-color: #fdf2f8; color: #9d174d; border-color: #fbcfe8; }
+    .filter-btn[data-filter="歌唱"].active { background-color: #db2777; color: #ffffff; border-color: #db2777; }
+
+    /* 動画（オレンジ） */
+    .filter-btn[data-filter="動画"] { background-color: #fff7ed; color: #9a3412; border-color: #fed7aa; }
+    .filter-btn[data-filter="動画"].active { background-color: #ea580c; color: #ffffff; border-color: #ea580c; }
+
 
     /* 並べ替えセレクトボックス */
     .sort-select {
@@ -135,9 +156,9 @@
       color: var(--text-main);
     }
 
-    /* ★ Shopボタン（物販リンク）のスタイル ★ */
+    /* Shopボタン */
     .shop-btn {
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #0f172a, #334155);
       color: #ffffff;
       text-decoration: none;
       padding: 6px 16px;
@@ -147,12 +168,12 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
       transition: all 0.2s ease;
     }
     .shop-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
       opacity: 0.95;
     }
 
@@ -216,25 +237,34 @@
     }
     .card:hover .play-icon { background: var(--accent); }
 
-    .card-info { padding: 10px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-info { padding: 12px 10px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-title { 
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      margin-bottom: 6px; 
-      line-height: 1.3; 
+      margin-bottom: 8px; 
+      line-height: 1.35; 
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      color: var(--text-main);
     }
+    
+    /* ★ カード内の担当バッジ ★ */
     .card-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: auto; }
     .tag {
-      font-size: 0.65rem;
-      background-color: #f1f5f9;
-      color: #475569;
-      padding: 2px 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
       border-radius: 4px;
+      letter-spacing: 0.3px;
     }
+    .tag-作詞 { background-color: #dbeafe; color: #1e40af; } /* 青 */
+    .tag-作曲 { background-color: #f3e8ff; color: #6b21a8; } /* 紫 */
+    .tag-MIX  { background-color: #dcfce7; color: #166534; } /* 緑 */
+    .tag-歌唱 { background-color: #fce7f3; color: #9d174d; } /* ピンク */
+    .tag-動画 { background-color: #ffedd5; color: #9a3412; } /* オレンジ */
+    .tag-default { background-color: #f1f5f9; color: #475569; }
 
     /* ★ スマホ表示時（画面幅600px以下）の特別な処理 ★ */
     @media (max-width: 600px) {
@@ -286,12 +316,6 @@
       .filter-btn {
         padding: 5px 10px;
         font-size: 0.72rem;
-        background-color: rgba(255, 255, 255, 0.95);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-      }
-      .filter-btn.active {
-        background-color: #0f172a;
-        color: #ffffff;
       }
       .sort-select {
         padding: 4px 8px;
@@ -320,7 +344,7 @@
       position: relative;
       width: 100%;
       max-width: 900px;
-      background: #000;
+      background: #0f172a;
       border-radius: 8px;
       overflow: hidden;
     }
@@ -335,6 +359,26 @@
       width: 100%; height: 100%;
       border: 0;
     }
+    .modal-meta {
+      padding: 14px 16px;
+      background: #0f172a;
+      color: #ffffff;
+      border-top: 1px solid #1e293b;
+    }
+    .modal-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .modal-roles {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
     .close-btn {
       position: absolute;
       top: -40px; right: 0;
@@ -369,7 +413,7 @@
           <option value="oldest">古い順</option>
         </select>
 
-        <!-- ★ 物販リンク（Shopボタン） ★ -->
+        <!-- ★ 物販リンク（BOOTHショップ） ★ -->
         <a href="https://arirevive.booth.pm/" target="_blank" rel="noopener noreferrer" class="shop-btn">Shop ↗</a>
       </div>
     </div>
@@ -385,6 +429,10 @@
     <div class="modal-content">
       <span class="close-btn" id="modal-close">&times;</span>
       <div class="video-container" id="video-container"></div>
+      <div class="modal-meta">
+        <div class="modal-title" id="modal-title"></div>
+        <div class="modal-roles" id="modal-roles"></div>
+      </div>
     </div>
   </div>
 
@@ -408,6 +456,8 @@
     const grid = document.getElementById('portfolio-grid');
     const modal = document.getElementById('video-modal');
     const videoContainer = document.getElementById('video-container');
+    const modalTitle = document.getElementById('modal-title');
+    const modalRoles = document.getElementById('modal-roles');
     const closeBtn = document.getElementById('modal-close');
     const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
     const sortSelect = document.getElementById('sort-select');
@@ -442,7 +492,7 @@
                   id: videoId,
                   title: title,
                   thumbnail: thumbnail,
-                  publishedAt: 0, // videos APIで後から正確な投稿日時を代入
+                  publishedAt: 0,
                   tags: [tagName]
                 });
               }
@@ -501,6 +551,12 @@
       renderWorks();
     }
 
+    // タグ用のクラス名（色分け）判定
+    function getTagClass(tag) {
+      const validTags = ['作詞', '作曲', 'MIX', '歌唱', '動画'];
+      return validTags.includes(tag) ? `tag-${tag}` : 'tag-default';
+    }
+
     function renderWorks() {
       grid.innerHTML = '';
       let worksArray = Array.from(allWorksMap.values());
@@ -534,17 +590,19 @@
           <div class="card-info">
             <div class="card-title">${work.title}</div>
             <div class="card-tags">
-              ${work.tags.map(t => `<span class="tag">#${t}</span>`).join('')}
+              ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}
             </div>
           </div>
         `;
-        card.addEventListener('click', () => openModal(work.id));
+        card.addEventListener('click', () => openModal(work));
         grid.appendChild(card);
       });
     }
 
-    function openModal(id) {
-      videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    function openModal(work) {
+      videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${work.id}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      modalTitle.textContent = work.title;
+      modalRoles.innerHTML = `担当: ${work.tags.map(t => `<span class="tag ${getTagClass(t)}">${t}</span>`).join('')}`;
       modal.classList.add('active');
     }
 
@@ -573,7 +631,7 @@
       });
     });
 
-    // ★ 横スワイプ（フリック）によるタグ切り替え処理 ★
+    // 横スワイプ（フリック）によるタグ切り替え処理
     let touchStartX = 0;
     let touchStartY = 0;
 
@@ -589,15 +647,12 @@
       const diffX = touchEndX - touchStartX;
       const diffY = touchEndY - touchStartY;
 
-      // 縦スクロール操作（diffYが大きい時）はスキップし、横方向に一定以上動いた時だけ反応させる
       if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
         const currentIndex = filterBtns.findIndex(b => b.dataset.filter === currentFilter);
         
         if (diffX < 0 && currentIndex < filterBtns.length - 1) {
-          // 左スワイプ -> 次のタグへ
           setFilter(filterBtns[currentIndex + 1].dataset.filter);
         } else if (diffX > 0 && currentIndex > 0) {
-          // 右スワイプ -> 前のタグへ
           setFilter(filterBtns[currentIndex - 1].dataset.filter);
         }
       }
